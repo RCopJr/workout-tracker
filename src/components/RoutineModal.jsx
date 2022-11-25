@@ -2,6 +2,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
+import ExerciseEntry from "./ExerciseEntry";
+import ExerciseHeading from "./ExerciseHeading";
 
 const RoutineModal = (props) => {
   return (
@@ -50,6 +52,8 @@ const RoutineModal = (props) => {
                       Insert notes about routine here
                     </p>
                   </div>
+                  <ExerciseHeading />
+                  <ExerciseEntry />
 
                   {/* <div className="mt-4">
                     <button
