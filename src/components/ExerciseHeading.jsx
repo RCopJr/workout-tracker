@@ -3,7 +3,7 @@ import ExerciseDropdown from "./ExerciseDropdown";
 const ExerciseHeading = (props) => {
   return (
     <>
-      <div className="flex max-w-xl justify-between items-center">
+      <div className="mt-5 flex max-w-xl justify-between items-center">
         <h1 className="font-bold text-sky-500">Bench Press (Barbell)</h1>
         <ExerciseDropdown />
       </div>

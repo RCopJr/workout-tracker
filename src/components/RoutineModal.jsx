@@ -2,8 +2,10 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
-import ExerciseEntry from "./ExerciseEntry";
+import BtnSolid from "./BtnSolid";
+import ExerciseDataHeader from "./ExerciseDataHeader";
 import ExerciseHeading from "./ExerciseHeading";
+import SetEntry from "./SetEntry";
 
 const RoutineModal = (props) => {
   return (
@@ -37,33 +39,56 @@ const RoutineModal = (props) => {
                   <div className="flex items-center justify-between">
                     <button
                       type="button"
-                      className="flex items-center bg-gray-300 rounded-md px-2 py-1 focus:outline-none"
+                      className="flex items-center bg-gray-200 rounded-md px-2 py-1 focus:outline-none"
                       onClick={props.closeModal}
                     >
                       <FontAwesomeIcon icon={faXmark} />
                     </button>
-                    <Dialog.Title as="h2" className="font-medium text-lg">
+                    <Dialog.Title as="h2" className="font-extrabold text-lg">
                       Legs
                     </Dialog.Title>
                     <button className="text-blue-400 text-lg">Edit</button>
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-3">
                     <p className="text-md text-gray-500">
                       Insert notes about routine here
                     </p>
                   </div>
                   <ExerciseHeading />
-                  <ExerciseEntry />
-
-                  {/* <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={props.closeModal}
-                    >
-                      Got it, thanks!
-                    </button>
-                  </div> */}
+                  <ExerciseDataHeader />
+                  <SetEntry />
+                  <SetEntry />
+                  <SetEntry />
+                  <div className="mt-5 flex justify-center">
+                    <BtnSolid variant="gray-sm" text="+ Add Set" />
+                  </div>
+                  <ExerciseHeading />
+                  <ExerciseDataHeader />
+                  <SetEntry />
+                  <SetEntry />
+                  <SetEntry />
+                  <div className="mt-5 flex justify-center">
+                    <BtnSolid variant="gray-sm" text="+ Add Set" />
+                  </div>
+                  <ExerciseHeading />
+                  <ExerciseDataHeader />
+                  <SetEntry />
+                  <SetEntry />
+                  <SetEntry />
+                  <div className="mt-5 flex justify-center">
+                    <BtnSolid variant="gray-sm" text="+ Add Set" />
+                  </div>
+                  <ExerciseHeading />
+                  <ExerciseDataHeader />
+                  <SetEntry />
+                  <SetEntry />
+                  <SetEntry />
+                  <div className="mt-5 flex justify-center">
+                    <BtnSolid variant="gray-sm" text="+ Add Set" />
+                  </div>
+                  <div className="mt-8 flex justify-center">
+                    <BtnSolid variant="red-light" text="Delete Workout" />
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
