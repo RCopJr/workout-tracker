@@ -2,7 +2,7 @@ import React from "react";
 
 const BtnSolid = (props) => {
   let bgColor = "bg-sky-200";
-  let padding = "py-2";
+  let padding = "py-1";
   let textColor = "";
 
   if (props.variant === "gray-sm") {
@@ -10,12 +10,16 @@ const BtnSolid = (props) => {
     padding = "py-0";
   } else if (props.variant === "red-light") {
     bgColor = "bg-red-200";
-    padding = "py-2";
+    padding = "py-1";
     textColor = "text-red-500";
   } else if (props.variant === "blue-light") {
     bgColor = "bg-sky-200";
-    padding = "py-2";
+    padding = "py-1";
     textColor = "text-sky-500";
+  } else if (props.variant == "blue-dark") {
+    bgColor = "bg-sky-500";
+    padding = "py-1";
+    textColor = "text-white";
   }
 
   return (
