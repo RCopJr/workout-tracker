@@ -30,7 +30,7 @@ const RoutineModal = (props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="fixed inset-0 bg-black/25" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -80,15 +80,22 @@ const RoutineModal = (props) => {
                     )}
                   </div>
                   <div className="mt-3">
-                    <p className="text-md text-gray-500">
-                      Insert notes about routine here
-                    </p>
+                    {inEditMode ? (
+                      <input
+                        type="text"
+                        className="text-md text-gray-500 w-full"
+                        placeholder="Insert notes about routine here"
+                      ></input>
+                    ) : (
+                      <p className="text-md text-gray-500">
+                        Insert notes about routine here
+                      </p>
+                    )}
                   </div>
-                  <ExerciseHeading />
-                  <ExerciseDataHeader />
-                  <SetEntry />
-                  <SetEntry />
-                  <SetEntry />
+                  <ExerciseHeading inEditMode={inEditMode} />
+                  <ExerciseDataHeader inEditMode={inEditMode} />
+                  <SetEntry inEditMode={inEditMode} />
+                  <SetEntry inEditMode={inEditMode} />
                   <Transition
                     appear
                     show={inEditMode}
@@ -100,15 +107,15 @@ const RoutineModal = (props) => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="mt-5 flex justify-center">
+                    <div className="mt-5 flex justify-center gap-3">
                       <BtnSolid variant="gray-sm" text="+ Add Set" />
+                      <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
                     </div>
                   </Transition>
-                  <ExerciseHeading />
-                  <ExerciseDataHeader />
-                  <SetEntry />
-                  <SetEntry />
-                  <SetEntry />
+                  <ExerciseHeading inEditMode={inEditMode} />
+                  <ExerciseDataHeader inEditMode={inEditMode} />
+                  <SetEntry inEditMode={inEditMode} />
+                  <SetEntry inEditMode={inEditMode} />
                   <Transition
                     appear
                     show={inEditMode}
@@ -120,54 +127,9 @@ const RoutineModal = (props) => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="mt-5 flex justify-center">
+                    <div className="mt-5 flex justify-center gap-3">
                       <BtnSolid variant="gray-sm" text="+ Add Set" />
-                    </div>
-                  </Transition>
-                  <ExerciseHeading />
-                  <ExerciseDataHeader />
-                  <SetEntry />
-                  <SetEntry />
-                  <SetEntry />
-                  <ExerciseHeading />
-                  <ExerciseDataHeader />
-                  <SetEntry />
-                  <SetEntry />
-                  <SetEntry />
-                  <Transition
-                    appear
-                    show={inEditMode}
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <div className="mt-5 flex justify-center">
-                      <BtnSolid variant="gray-sm" text="+ Add Set" />
-                    </div>
-                  </Transition>
-
-                  <ExerciseHeading />
-                  <ExerciseDataHeader />
-                  <SetEntry />
-                  <SetEntry />
-                  <SetEntry />
-                  <Transition
-                    appear
-                    show={inEditMode}
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <div className="mt-5 flex justify-center">
-                      <BtnSolid variant="gray-sm" text="+ Add Set" />
+                      <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
                     </div>
                   </Transition>
                   <Transition
@@ -186,9 +148,36 @@ const RoutineModal = (props) => {
                     </div>
                   </Transition>
 
-                  <div className="mt-8 flex justify-center">
-                    <BtnSolid variant="red-light" text="Delete Workout" />
-                  </div>
+                  <Transition
+                    appear
+                    show={inEditMode}
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="mt-8 flex justify-center">
+                      <BtnSolid variant="blue-dark" text="Save" />
+                    </div>
+                  </Transition>
+                  <Transition
+                    appear
+                    show={inEditMode}
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="mt-8 flex justify-center">
+                      <BtnSolid variant="red-light" text="Delete Workout" />
+                    </div>
+                  </Transition>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
