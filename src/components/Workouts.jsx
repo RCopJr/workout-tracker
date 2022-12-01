@@ -1,13 +1,17 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { isError, useQuery } from "react-query";
 import * as api from "../workoutsAPI";
 import RoutinePreviewCard from "./RoutinePreviewCard";
 
 const Workouts = (props) => {
-  const { data, isLoading } = useQuery("workouts", api.getWorkouts);
+  const { data, isLoading, isError } = useQuery("workouts", api.getWorkouts);
 
   if (isLoading) {
     return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error Getting Data</p>;
   }
 
   return (

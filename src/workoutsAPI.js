@@ -6,12 +6,10 @@ const api = axios.create({
 
 export const getWorkouts = async () => {
   try {
-    console.log("in request");
     const response = await api.get("/workouts");
-    console.log(response.data);
     return response.data;
   } catch (error) {
-    console.log("error");
+    throw new Error("Network response was not ok.");
   }
 };
 
@@ -20,6 +18,6 @@ export const getWorkout = async (id) => {
     const response = await api.get(`/workouts/${id}`);
     return response.data;
   } catch (error) {
-    console.log("error");
+    throw new Error("Network response as not ok.");
   }
 };
