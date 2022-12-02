@@ -22,7 +22,7 @@ function ExerciseDropdown() {
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-0"
       >
-        <Menu.Items className="w-60 absolute right-0 mt-2 origin-top-right rounded-md bg-gray-800 text-white shadow-lg focus:outline-none">
+        <Menu.Items className="z-20 w-60 absolute right-0 mt-2 origin-top-right rounded-md bg-gray-800 text-white shadow-lg focus:outline-none">
           <Menu.Item>
             {({ active }) => (
               <button
