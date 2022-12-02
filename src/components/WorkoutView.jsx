@@ -38,6 +38,7 @@ const WorkoutView = (props) => {
             className="flex items-center bg-gray-200 rounded-md px-2 py-1 focus:outline-none"
             onClick={() => {
               props.closeModal();
+              props.setInEditMode(false);
             }}
           >
             <FontAwesomeIcon icon={faXmark} />

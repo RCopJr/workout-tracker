@@ -29,6 +29,8 @@ const WorkoutUpdateForm = (props) => {
     return "Error happened";
   }
 
+  const [fields, setFields] = useState({ ...workout });
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -38,6 +40,7 @@ const WorkoutUpdateForm = (props) => {
             className="flex items-center bg-gray-200 rounded-md px-2 py-1 focus:outline-none"
             onClick={() => {
               props.closeModal();
+              props.setInEditMode(false);
             }}
           >
             <FontAwesomeIcon icon={faXmark} />
@@ -45,7 +48,7 @@ const WorkoutUpdateForm = (props) => {
         </div>
         <div className="flex justify-center items-center">
           <Dialog.Title as="h2" className="font-extrabold text-lg">
-            <WorkoutTitleInput name={workout.name} />
+            <WorkoutTitleInput name={fields.name} />
           </Dialog.Title>
         </div>
         <div className="flex justify-end items-center">
@@ -60,9 +63,9 @@ const WorkoutUpdateForm = (props) => {
         </div>
       </div>
       <div className="mt-3">
-        <WorkoutNoteInput note={workout.note} />
+        <WorkoutNoteInput note={fields.note} />
       </div>
-      {workout.exercises.map((exercise) => {
+      {fields.exercises.map((exercise) => {
         const id = uuidv4();
         return (
           <React.Fragment key={id}>
