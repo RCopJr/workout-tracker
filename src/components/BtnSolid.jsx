@@ -11,11 +11,11 @@ const BtnSolid = (props) => {
   } else if (props.variant === "red-light") {
     bgColor = "bg-red-200";
     padding = "py-1";
-    textColor = "text-red-500";
+    textColor = "text-red-600";
   } else if (props.variant === "blue-light") {
     bgColor = "bg-sky-200";
     padding = "py-1";
-    textColor = "text-sky-500";
+    textColor = "text-sky-600";
   } else if (props.variant == "blue-dark") {
     bgColor = "bg-sky-500";
     padding = "py-1";
