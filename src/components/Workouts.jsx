@@ -1,7 +1,7 @@
 import React from "react";
-import { isError, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import * as api from "../workoutsAPI";
-import RoutinePreviewCard from "./RoutinePreviewCard";
+import WorkoutPreviewCard from "./WorkoutPreviewCard";
 
 const Workouts = (props) => {
   const { data, isLoading, isError } = useQuery("workouts", api.getWorkouts);
@@ -17,7 +17,7 @@ const Workouts = (props) => {
   return (
     <>
       {data.workouts.map((workout) => {
-        return <RoutinePreviewCard key={workout.id} workoutId={workout.id} />;
+        return <WorkoutPreviewCard key={workout.id} workoutId={workout.id} />;
       })}
     </>
   );

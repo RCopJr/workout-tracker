@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BtnSolid from "./BtnSolid";
 import ExerciseHeading from "./ExerciseHeading";
-import RoutinePreviewCard from "./RoutinePreviewCard";
+import WorkoutPreviewCard from "./WorkoutPreviewCard";
 import Workouts from "./Workouts";
 
 function App() {

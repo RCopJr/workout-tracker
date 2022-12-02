@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import * as api from "../workoutsAPI";
-import RoutineModal from "./RoutineModal";
+import WorkoutModal from "./WorkoutModal";
 
-const RoutinePreviewCard = (props) => {
+const WorkoutPreviewCard = (props) => {
   const { data, isLoading } = useQuery(["workouts", props.workoutId], () =>
     api.getWorkout(props.workoutId)
   );
@@ -29,11 +29,10 @@ const RoutinePreviewCard = (props) => {
           <h1 className="font-bold font-sans pb-2">Loading...</h1>
           <p className="text-slate-600"></p>
         </div>
-        <RoutineModal closeModal={closeModal} isOpen={isOpen} />
+        <WorkoutModal closeModal={closeModal} isOpen={isOpen} />
       </>
     );
   }
-  const lenExercises = data.workout.exercises.length;
 
   return (
     <>
@@ -43,23 +42,23 @@ const RoutinePreviewCard = (props) => {
         }}
         className="block m-10 max-w-xs p-3 bg-white border border-gray-100 rounded-lg hover:bg-gray-100"
       >
-        <h1 className="font-bold font-sans pb-2">{data.workout.name}</h1>
+        <h1 className="font-bold font-sans pb-2">{data.name}</h1>
         <p className="text-slate-600">
-          {data.workout.exercises.reduce((previewInfo, currExercise, index) => {
-            let separator = ", ";
-            if (index === lenExercises - 1) {
-              separator = "";
-            }
-            return (
-              previewInfo +
-              `${currExercise.sets.length} x ${currExercise.name}${separator}`
-            );
+          {data.exercises.reduce((previewInfo, currExercise, index) => {
+            const { sets, name } = currExercise;
+            return index == 0
+              ? `${sets.length} x ${name}`
+              : `${previewInfo}, ${sets.length} x ${name}`;
           }, "")}
         </p>
       </div>
-      <RoutineModal closeModal={closeModal} isOpen={isOpen} />
+      <WorkoutModal
+        closeModal={closeModal}
+        isOpen={isOpen}
+        workoutId={props.workoutId}
+      />
     </>
   );
 };
 
-export default RoutinePreviewCard;
+export default WorkoutPreviewCard;
