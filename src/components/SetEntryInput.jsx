@@ -31,23 +31,11 @@ const SetEntry = (props) => {
             placeholder={props.rest}
           ></input>
         </div>
-        <Transition
-          appear
-          show={props.inEditMode}
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="hover:bg-blue-800 font-bold w-1/12  bg-gray-200 rounded-md text-center flex items-center justify-center">
-            <button type="button" className=" w-full rounded-md text-xs">
-              <FontAwesomeIcon icon={faMinus} />
-            </button>
-          </div>
-        </Transition>
+        <div className="hover:bg-blue-800 font-bold w-1/12  bg-gray-200 rounded-md text-center flex items-center justify-center">
+          <button type="button" className=" w-full rounded-md text-xs">
+            <FontAwesomeIcon icon={faMinus} />
+          </button>
+        </div>
       </div>
     </>
   );

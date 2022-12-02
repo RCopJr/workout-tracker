@@ -11,6 +11,7 @@ import ExerciseHeadingInput from "./ExerciseHeadingInput";
 import SetEntry from "./SetEntry";
 import SetEntryInput from "./SetEntryInput";
 import WorkoutNoteInput from "./WorkoutNoteInput";
+import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
   const {
@@ -27,6 +28,7 @@ const WorkoutUpdateForm = (props) => {
   if (isError) {
     return "Error happened";
   }
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -43,7 +45,7 @@ const WorkoutUpdateForm = (props) => {
         </div>
         <div className="flex justify-center items-center">
           <Dialog.Title as="h2" className="font-extrabold text-lg">
-            Legs
+            <WorkoutTitleInput name={workout.name} />
           </Dialog.Title>
         </div>
         <div className="flex justify-end items-center">
@@ -53,7 +55,7 @@ const WorkoutUpdateForm = (props) => {
               props.setInEditMode(false);
             }}
           >
-            View
+            Cancel
           </button>
         </div>
       </div>
@@ -63,9 +65,9 @@ const WorkoutUpdateForm = (props) => {
       {workout.exercises.map((exercise) => {
         const id = uuidv4();
         return (
-          <div key={id}>
+          <React.Fragment key={id}>
             <ExerciseHeadingInput name={exercise.name} />
-            <ExerciseDataHeader />
+            <ExerciseDataHeader inEditMode={props.inEditMode} />
             {exercise.sets.map((set, i) => {
               const { weight, reps, rest } = set;
               const id = uuidv4();
@@ -79,24 +81,22 @@ const WorkoutUpdateForm = (props) => {
                 />
               );
             })}
-          </div>
+            <div className="mt-5 flex justify-center gap-3">
+              <BtnSolid variant="gray-sm" text="+ Add Set" />
+              <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
+            </div>
+          </React.Fragment>
         );
       })}
-
-      <Transition
-        appear
-        as={Fragment}
-        enter="ease-out duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="ease-in duration-200"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <div className="mt-8 flex justify-center">
-          <BtnSolid variant="red-light" text="Delete Workout" />
-        </div>
-      </Transition>
+      <div className="mt-8 flex justify-center">
+        <BtnSolid variant="blue-light" text="Add Exercise" />
+      </div>
+      <div className="mt-8 flex justify-center">
+        <BtnSolid variant="blue-dark" text="Save" />
+      </div>
+      <div className="mt-8 flex justify-center">
+        <BtnSolid variant="red-light" text="Delete Workout" />
+      </div>
     </>
   );
 };

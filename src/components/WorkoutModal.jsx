@@ -45,6 +45,7 @@ const WorkoutModal = (props) => {
                     <WorkoutUpdateForm
                       isOpen={props.isOpen}
                       closeModal={props.closeModal}
+                      inEditMode={inEditMode}
                       setInEditMode={setInEditMode}
                       workoutId={props.workoutId}
                     />
@@ -52,6 +53,7 @@ const WorkoutModal = (props) => {
                     <WorkoutView
                       isOpen={props.isOpen}
                       closeModal={props.closeModal}
+                      inEditMode={inEditMode}
                       setInEditMode={setInEditMode}
                       workoutId={props.workoutId}
                     />

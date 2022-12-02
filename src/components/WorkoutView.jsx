@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import { useQuery } from "react-query";
+import { v4 as uuidv4 } from "uuid";
 import * as api from "../workoutsAPI";
 import BtnSolid from "./BtnSolid";
 import ExerciseDataHeader from "./ExerciseDataHeader";
@@ -10,6 +11,7 @@ import ExerciseHeading from "./ExerciseHeading";
 import SetEntry from "./SetEntry";
 import WorkoutNote from "./WorkoutNote";
 import Workouts from "./Workouts";
+import WorkoutTitle from "./WorkoutTitle";
 
 const WorkoutView = (props) => {
   const {
@@ -42,8 +44,8 @@ const WorkoutView = (props) => {
           </button>
         </div>
         <div className="flex justify-center items-center">
-          <Dialog.Title as="h2" className="font-extrabold text-lg">
-            {workout.name}
+          <Dialog.Title>
+            <WorkoutTitle name={workout.name} />
           </Dialog.Title>
         </div>
         <div className="flex justify-end items-center">
@@ -61,8 +63,27 @@ const WorkoutView = (props) => {
         <WorkoutNote note={workout.note} />
       </div>
 
-      {workout.exercises.map((exercise, index) => {
-        return <ExerciseHeading key={index} name={exercise.name} />;
+      {workout.exercises.map((exercise) => {
+        const id = uuidv4();
+        return (
+          <div key={id}>
+            <ExerciseHeading name={exercise.name} />
+            <ExerciseDataHeader inEditMode={props.inEditMode} />
+            {exercise.sets.map((set, i) => {
+              const { weight, reps, rest } = set;
+              const id = uuidv4();
+              return (
+                <SetEntry
+                  key={id}
+                  setNum={i + 1}
+                  weight={weight}
+                  reps={reps}
+                  rest={rest}
+                />
+              );
+            })}
+          </div>
+        );
       })}
     </>
   );
