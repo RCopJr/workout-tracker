@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import * as api from "../workoutsAPI";
 import WorkoutModal from "./WorkoutModal";
 
 const WorkoutPreviewCard = (props) => {
-  const { data, isLoading } = useQuery(["workouts", props.workoutId], () =>
-    api.getWorkout(props.workoutId)
+  const { data: workout, isLoading } = useQuery(
+    ["workouts", props.workoutId],
+    () => api.getWorkout(props.workoutId)
   );
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,10 +42,10 @@ const WorkoutPreviewCard = (props) => {
         }}
         className="block m-10 max-w-xs p-3 bg-white border border-gray-100 rounded-lg hover:bg-gray-100"
       >
-        <h1 className="font-bold font-sans pb-2">{data.name}</h1>
+        <h1 className="font-bold font-sans pb-2">{workout.name}</h1>
         <p className="text-slate-600">
-          {data.exercises.reduce((previewInfo, currExercise, index) => {
-            const { sets, name } = currExercise;
+          {workout.exercises.allIds.reduce((previewInfo, id, index) => {
+            const { name, sets } = workout.exercises.byId[id];
             return index == 0
               ? `${sets.length} x ${name}`
               : `${previewInfo}, ${sets.length} x ${name}`;
@@ -55,6 +56,7 @@ const WorkoutPreviewCard = (props) => {
         closeModal={closeModal}
         isOpen={isOpen}
         workoutId={props.workoutId}
+        workout={workout}
       />
     </>
   );
