@@ -16,7 +16,7 @@ const ExerciseHeadingInput = (props) => {
             type="text"
             onChange={handleChange}
             className="font-bold text-sky-500 w-full"
-            placeholder={props.name}
+            placeholder={props.name ? props.name : "New Exercise"}
             value={userInput}
           ></input>
         </h1>

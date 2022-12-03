@@ -1,20 +1,40 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
-import { useQuery } from "react-query";
+import { Dialog } from "@headlessui/react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import * as api from "../workoutsAPI";
 import BtnSolid from "./BtnSolid";
 import ExerciseDataHeader from "./ExerciseDataHeader";
 import ExerciseHeadingInput from "./ExerciseHeadingInput";
-import SetEntry from "./SetEntry";
 import SetEntryInput from "./SetEntryInput";
 import WorkoutNoteInput from "./WorkoutNoteInput";
 import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
   const [fields, setFields] = useState({ ...props.workout });
+
+  const handleAddExercise = (event) => {
+    const newId = uuidv4();
+    const newExercise = {
+      id: newId,
+      name: "",
+      sets: [],
+    };
+
+    setFields((prevFields) => ({
+      ...prevFields,
+      exercises: {
+        byId: {
+          ...prevFields.exercises.byId,
+          [newId]: newExercise,
+        },
+        allIds: [...prevFields.exercises.allIds, newId],
+      },
+    }));
+  };
+
+  const handleRemoveExercise = (event) => {};
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -80,7 +100,11 @@ const WorkoutUpdateForm = (props) => {
       })}
 
       <div className="mt-8 flex justify-center">
-        <BtnSolid variant="blue-light" text="Add Exercise" />
+        <BtnSolid
+          onClick={handleAddExercise}
+          variant="blue-light"
+          text="Add Exercise"
+        />
       </div>
       <div className="mt-8 flex justify-center">
         <BtnSolid variant="blue-dark" text="Save" />

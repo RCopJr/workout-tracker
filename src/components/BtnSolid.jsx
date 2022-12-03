@@ -27,7 +27,7 @@ const BtnSolid = (props) => {
       type="button"
       className={`${bgColor} hover:bg-blue-800 w-full ${padding} rounded-lg`}
       onClick={(event) => {
-        props.handleClick(event);
+        props.onClick(event);
       }}
     >
       <span className={`font-bold ${textColor}`}>{props.text}</span>
