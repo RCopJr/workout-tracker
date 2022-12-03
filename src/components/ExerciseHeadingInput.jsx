@@ -22,7 +22,10 @@ const ExerciseHeadingInput = (props) => {
         </h1>
       </div>
       <div>
-        <ExerciseDropdown />
+        <ExerciseDropdown
+          exerciseId={props.exerciseId}
+          handleRemoveExercise={props.handleRemoveExercise}
+        />
       </div>
     </div>
   );

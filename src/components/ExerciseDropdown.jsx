@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 
-function ExerciseDropdown() {
+function ExerciseDropdown(props) {
   return (
     <Menu as="div" className="relative inline-block">
       <Menu.Button className="bg-sky-100 px-2 rounded-md">
@@ -41,6 +41,9 @@ function ExerciseDropdown() {
           <Menu.Item>
             {({ active }) => (
               <button
+                onClick={(event) => {
+                  props.handleRemoveExercise(event, props.exerciseId);
+                }}
                 className={`${
                   active && "bg-gray-700/60"
                 } w-full rounded-b-md flex items-center px-3 py-1.5`}

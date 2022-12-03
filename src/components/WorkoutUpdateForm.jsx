@@ -33,7 +33,18 @@ const WorkoutUpdateForm = (props) => {
     }));
   };
 
-  const handleRemoveExercise = (event) => {};
+  const handleRemoveExercise = (event, exerciseId) => {
+    setFields((prevFields) => {
+      const newFields = { ...prevFields };
+      delete newFields.exercises[exerciseId];
+      const exerciseIndex = newFields.exercises.allIds.indexOf(exerciseId);
+      if (exerciseIndex > -1) {
+        newFields.exercises.allIds.splice(exerciseIndex, 1);
+      }
+      console.log(newFields, exerciseId);
+      return newFields;
+    });
+  };
 
   return (
     <>
@@ -74,7 +85,11 @@ const WorkoutUpdateForm = (props) => {
         const keyId = uuidv4();
         return (
           <React.Fragment key={keyId}>
-            <ExerciseHeadingInput exerciseId={exerciseId} name={name} />
+            <ExerciseHeadingInput
+              exerciseId={exerciseId}
+              name={name}
+              handleRemoveExercise={handleRemoveExercise}
+            />
             <ExerciseDataHeader inEditMode={props.inEditMode} />
             {setIds.map((setId, index) => {
               const { weight, reps, rest } = fields.sets[setId];
