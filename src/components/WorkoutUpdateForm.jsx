@@ -15,7 +15,6 @@ import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
   const [fields, setFields] = useState({ ...props.workout });
-
   return (
     <>
       <div className="grid grid-cols-3">
@@ -48,21 +47,24 @@ const WorkoutUpdateForm = (props) => {
         </div>
       </div>
       <div className="mt-3">
-        <WorkoutNoteInput note={fields.note} />
+        <WorkoutNoteInput workoutId={props.workoutId} note={fields.note} />
       </div>
-      {/* {fields.exercises.map((exercise) => {
-        const id = uuidv4();
+      {fields.exercises.allIds.map((exerciseId) => {
+        const { name, sets: setIds } = fields.exercises.byId[exerciseId];
+        const keyId = uuidv4();
         return (
-          <React.Fragment key={id}>
-            <ExerciseHeadingInput name={exercise.name} />
+          <React.Fragment key={keyId}>
+            <ExerciseHeadingInput exerciseId={exerciseId} name={name} />
             <ExerciseDataHeader inEditMode={props.inEditMode} />
-            {exercise.sets.map((set, i) => {
-              const { weight, reps, rest } = set;
-              const id = uuidv4();
+            {setIds.map((setId, index) => {
+              const { weight, reps, rest } = fields.sets[setId];
+              const keyId = uuidv4();
               return (
                 <SetEntryInput
-                  key={id}
-                  setNum={i + 1}
+                  key={keyId}
+                  exerciseId={exerciseId}
+                  setId={setId}
+                  setNum={index + 1}
                   weight={weight}
                   reps={reps}
                   rest={rest}
@@ -75,7 +77,8 @@ const WorkoutUpdateForm = (props) => {
             </div>
           </React.Fragment>
         );
-      })} */}
+      })}
+
       <div className="mt-8 flex justify-center">
         <BtnSolid variant="blue-light" text="Add Exercise" />
       </div>
