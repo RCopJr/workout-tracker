@@ -29,7 +29,6 @@ const WorkoutPreviewCard = (props) => {
           <h1 className="font-bold font-sans pb-2">Loading...</h1>
           <p className="text-slate-600"></p>
         </div>
-        <WorkoutModal closeModal={closeModal} isOpen={isOpen} />
       </>
     );
   }
