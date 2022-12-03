@@ -14,22 +14,7 @@ import WorkoutNoteInput from "./WorkoutNoteInput";
 import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
-  const {
-    data: workout,
-    isLoading,
-    isError,
-  } = useQuery(["workout", props.workoutId], () =>
-    api.getWorkout(props.workoutId)
-  );
-  if (isLoading) {
-    return "loading..";
-  }
-
-  if (isError) {
-    return "Error happened";
-  }
-
-  const [fields, setFields] = useState({ ...workout });
+  const [fields, setFields] = useState({ ...props.workout });
 
   return (
     <>
@@ -65,7 +50,7 @@ const WorkoutUpdateForm = (props) => {
       <div className="mt-3">
         <WorkoutNoteInput note={fields.note} />
       </div>
-      {fields.exercises.map((exercise) => {
+      {/* {fields.exercises.map((exercise) => {
         const id = uuidv4();
         return (
           <React.Fragment key={id}>
@@ -90,7 +75,7 @@ const WorkoutUpdateForm = (props) => {
             </div>
           </React.Fragment>
         );
-      })}
+      })} */}
       <div className="mt-8 flex justify-center">
         <BtnSolid variant="blue-light" text="Add Exercise" />
       </div>
