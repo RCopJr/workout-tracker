@@ -6,10 +6,6 @@ import WorkoutUpdateForm from "./WorkoutUpdateForm";
 import WorkoutView from "./WorkoutView";
 
 const WorkoutModal = (props) => {
-  const { data: workout, isLoading } = useQuery(
-    ["workouts", props.workoutId],
-    () => api.getWorkout(props.workoutId)
-  );
   const [inEditMode, setInEditMode] = useState(false);
 
   return (
@@ -47,30 +43,24 @@ const WorkoutModal = (props) => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-xl overflow-hidden rounded-2xl bg-white p-4 text-left shadow-xl">
-                  {isLoading ? (
-                    "Loading Data"
+                  {inEditMode ? (
+                    <WorkoutUpdateForm
+                      isOpen={props.isOpen}
+                      closeModal={props.closeModal}
+                      inEditMode={inEditMode}
+                      setInEditMode={setInEditMode}
+                      workoutId={props.workoutId}
+                      workout={props.workout}
+                    />
                   ) : (
-                    <>
-                      {inEditMode ? (
-                        <WorkoutUpdateForm
-                          isOpen={props.isOpen}
-                          closeModal={props.closeModal}
-                          inEditMode={inEditMode}
-                          setInEditMode={setInEditMode}
-                          workoutId={props.workoutId}
-                          workout={workout}
-                        />
-                      ) : (
-                        <WorkoutView
-                          isOpen={props.isOpen}
-                          closeModal={props.closeModal}
-                          inEditMode={inEditMode}
-                          setInEditMode={setInEditMode}
-                          workoutId={props.workoutId}
-                          workout={workout}
-                        />
-                      )}
-                    </>
+                    <WorkoutView
+                      isOpen={props.isOpen}
+                      closeModal={props.closeModal}
+                      inEditMode={inEditMode}
+                      setInEditMode={setInEditMode}
+                      workoutId={props.workoutId}
+                      workout={props.workout}
+                    />
                   )}
                 </Dialog.Panel>
               </Transition.Child>
