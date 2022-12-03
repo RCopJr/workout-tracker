@@ -5,7 +5,6 @@ import React, { Fragment, useState } from "react";
 import { useQuery } from "react-query";
 import { v4 as uuidv4 } from "uuid";
 import * as api from "../workoutsAPI";
-import BtnSolid from "./BtnSolid";
 import ExerciseDataHeader from "./ExerciseDataHeader";
 import ExerciseHeading from "./ExerciseHeading";
 import SetEntry from "./SetEntry";
@@ -14,21 +13,6 @@ import Workouts from "./Workouts";
 import WorkoutTitle from "./WorkoutTitle";
 
 const WorkoutView = (props) => {
-  const {
-    data: workout,
-    isLoading,
-    isError,
-  } = useQuery(["workout", props.workoutId], () =>
-    api.getWorkout(props.workoutId)
-  );
-  if (isLoading) {
-    return "loading..";
-  }
-
-  if (isError) {
-    return "Error happened";
-  }
-
   return (
     <>
       <div className="grid grid-cols-3">
@@ -46,7 +30,7 @@ const WorkoutView = (props) => {
         </div>
         <div className="flex justify-center items-center">
           <Dialog.Title>
-            <WorkoutTitle name={workout.name} />
+            <WorkoutTitle name={props.workout.name} />
           </Dialog.Title>
         </div>
         <div className="flex justify-end items-center">
@@ -61,22 +45,23 @@ const WorkoutView = (props) => {
         </div>
       </div>
       <div className="mt-3">
-        <WorkoutNote note={workout.note} />
+        <WorkoutNote note={props.workout.note} />
       </div>
 
-      {workout.exercises.map((exercise) => {
-        const id = uuidv4();
+      {props.workout.exercises.allIds.map((id) => {
+        const keyId = uuidv4();
+        const { name, sets } = props.workout.exercises.byId[id];
         return (
-          <div key={id}>
-            <ExerciseHeading name={exercise.name} />
+          <div key={keyId}>
+            <ExerciseHeading name={name} />
             <ExerciseDataHeader inEditMode={props.inEditMode} />
-            {exercise.sets.map((set, i) => {
-              const { weight, reps, rest } = set;
-              const id = uuidv4();
+            {sets.map((id, index) => {
+              const { weight, reps, rest } = props.workout.sets[id];
+              const keyId = uuidv4();
               return (
                 <SetEntry
-                  key={id}
-                  setNum={i + 1}
+                  key={keyId}
+                  setNum={index + 1}
                   weight={weight}
                   reps={reps}
                   rest={rest}
