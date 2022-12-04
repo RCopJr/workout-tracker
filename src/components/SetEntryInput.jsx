@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 
 const SetEntry = (props) => {
+  const getPlaceHolderValue = (originalSets, setId, name) => {
+    return setId in originalSets ? originalSets[setId][name] : "";
+  };
   return (
     <>
       <div className="flex justify-between mt-4 gap-x-6">
@@ -17,7 +20,11 @@ const SetEntry = (props) => {
             }}
             name="weight"
             type="text"
-            placeholder={props.weight ? props.weight : ""}
+            placeholder={getPlaceHolderValue(
+              props.originalSets,
+              props.setId,
+              "weight"
+            )}
             value={props.weight}
           ></input>
         </div>
@@ -29,7 +36,11 @@ const SetEntry = (props) => {
             }}
             name="reps"
             type="text"
-            placeholder={props.reps ? props.reps : ""}
+            placeholder={getPlaceHolderValue(
+              props.originalSets,
+              props.setId,
+              "reps"
+            )}
             value={props.reps}
           ></input>
         </div>
@@ -41,7 +52,11 @@ const SetEntry = (props) => {
             }}
             name="rest"
             type="text"
-            placeholder={props.rest ? props.rest : ""}
+            placeholder={getPlaceHolderValue(
+              props.originalSets,
+              props.setId,
+              "rest "
+            )}
             value={props.rest}
           ></input>
         </div>

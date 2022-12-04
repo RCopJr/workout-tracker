@@ -234,6 +234,7 @@ const WorkoutUpdateForm = (props) => {
                 <SetEntryInput
                   key={setId}
                   exerciseId={exerciseId}
+                  originalSets={props.workout.sets}
                   setId={setId}
                   setNum={index + 1}
                   weight={weight}
