@@ -5,7 +5,11 @@ import * as api from "../workoutsAPI";
 import WorkoutPreviewCard from "./WorkoutPreviewCard";
 
 const Workouts = (props) => {
-  const { data, isLoading, isError } = useQuery("workouts", api.getWorkouts, {
+  const {
+    data: workouts,
+    isLoading,
+    isError,
+  } = useQuery("workouts", api.getWorkouts, {
     refetchOnWindowFocus: false,
   });
 
@@ -18,9 +22,8 @@ const Workouts = (props) => {
   }
   return (
     <>
-      {data.workouts.map((workout) => {
-        const id = uuidv4();
-        return <WorkoutPreviewCard key={id} workoutId={workout.id} />;
+      {workouts.allIds.map((workoutId) => {
+        return <WorkoutPreviewCard key={workoutId} workoutId={workoutId} />;
       })}
     </>
   );
