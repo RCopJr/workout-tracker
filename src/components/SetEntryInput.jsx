@@ -14,7 +14,7 @@ const SetEntry = (props) => {
         </div>
         <div className="font-bold w-1/4 bg-gray-200 rounded-lg text-center">
           <input
-            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-600 focus:placeholder-gray-500"
+            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-400 "
             onChange={(event) => {
               props.handleChangeSet(event, props.setId);
             }}
@@ -30,7 +30,7 @@ const SetEntry = (props) => {
         </div>
         <div className="font-bold w-1/4 bg-gray-200 rounded-lg text-center">
           <input
-            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-900 focus:placeholder-gray-500"
+            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-400"
             onChange={(event) => {
               props.handleChangeSet(event, props.setId);
             }}
@@ -46,7 +46,7 @@ const SetEntry = (props) => {
         </div>
         <div className="font-bold w-1/4 bg-gray-200 rounded-lg text-center">
           <input
-            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-900 focus:placeholder-gray-500"
+            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-400"
             onChange={(event) => {
               props.handleChangeSet(event, props.setId);
             }}

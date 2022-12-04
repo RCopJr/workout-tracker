@@ -26,21 +26,6 @@ function ExerciseDropdown(props) {
           <Menu.Item>
             {({ active }) => (
               <button
-                className={`${
-                  active && "bg-gray-700/60"
-                } w-full rounded-t-md flex items-center px-3 py-1.5`}
-              >
-                <FontAwesomeIcon
-                  icon={faPencil}
-                  className="text-md mr-3 text-sky-400"
-                />
-                Rename
-              </button>
-            )}
-          </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <button
                 onClick={(event) => {
                   props.handleRemoveExercise(event, props.exerciseId);
                 }}
