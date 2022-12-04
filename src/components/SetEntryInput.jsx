@@ -26,11 +26,11 @@ const SetEntry = (props) => {
         </div>
         <div className="font-bold w-1/4 bg-gray-200 rounded-lg text-center">
           <input
-            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-900 focus:placeholder-gray-500"
+            className="font-bold w-full bg-gray-200 rounded-lg text-center text-ellipsis placeholder-gray-600 focus:placeholder-gray-500"
             onChange={handleChange}
             name="weight"
             type="text"
-            placeholder={props.weight ? props.weight : "Add weight"}
+            placeholder={props.weight ? props.weight : ""}
             value={userInput.weight}
           ></input>
         </div>
@@ -40,7 +40,7 @@ const SetEntry = (props) => {
             onChange={handleChange}
             name="reps"
             type="text"
-            placeholder={props.reps ? props.reps : "Add reps"}
+            placeholder={props.reps ? props.reps : ""}
             value={userInput.reps}
           ></input>
         </div>
@@ -50,7 +50,7 @@ const SetEntry = (props) => {
             onChange={handleChange}
             name="rest"
             type="text"
-            placeholder={props.rest ? props.rest : "Add rest"}
+            placeholder={props.rest ? props.rest : ""}
             value={userInput.rest}
           ></input>
         </div>
