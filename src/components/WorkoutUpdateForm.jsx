@@ -61,6 +61,25 @@ const WorkoutUpdateForm = (props) => {
     });
   };
 
+  const handleChangeExercise = (event, exerciseId) => {
+    event.preventDefault();
+    const newVal = event.target.value;
+    console.log(newVal);
+    setFields((prevFields) => ({
+      ...prevFields,
+      exercises: {
+        ...prevFields.exercises,
+        byId: {
+          ...prevFields.exercises.byId,
+          [exerciseId]: {
+            ...prevFields.exercises.byId[exerciseId],
+            name: newVal,
+          },
+        },
+      },
+    }));
+  };
+
   const handleAddSet = (event, exerciseId) => {
     const newId = uuidv4();
     const newSet = {
@@ -164,13 +183,15 @@ const WorkoutUpdateForm = (props) => {
       </div>
       {fields.exercises.allIds.map((exerciseId) => {
         const { name, sets: setIds } = fields.exercises.byId[exerciseId];
-        const keyId = uuidv4();
+        const keyId = exerciseId;
         return (
-          <React.Fragment key={keyId}>
+          <div key={keyId}>
             <ExerciseHeadingInput
               exerciseId={exerciseId}
+              originalExerciseIds={props.workout.exercises.byId}
               name={name}
               handleRemoveExercise={handleRemoveExercise}
+              handleChangeExercise={handleChangeExercise}
             />
             <ExerciseDataHeader inEditMode={props.inEditMode} />
             {setIds.map((setId, index) => {
@@ -198,7 +219,7 @@ const WorkoutUpdateForm = (props) => {
               />
               <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
             </div>
-          </React.Fragment>
+          </div>
         );
       })}
       <div className="mt-8 flex justify-center">
