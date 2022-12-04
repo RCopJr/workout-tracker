@@ -11,7 +11,10 @@ import WorkoutNoteInput from "./WorkoutNoteInput";
 import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
-  const [fields, setFields] = useState({ ...props.workout });
+  const defaultValues = { ...props.workout };
+  const [fields, setFields] = useState(defaultValues);
+  //TODO: implement this when refactorin
+  const removeByValue = (value, array) => {};
 
   const handleAddExercise = (event) => {
     const newId = uuidv4();
@@ -35,14 +38,93 @@ const WorkoutUpdateForm = (props) => {
 
   const handleRemoveExercise = (event, exerciseId) => {
     setFields((prevFields) => {
-      const newFields = { ...prevFields };
-      delete newFields.exercises[exerciseId];
-      const exerciseIndex = newFields.exercises.allIds.indexOf(exerciseId);
-      if (exerciseIndex > -1) {
-        newFields.exercises.allIds.splice(exerciseIndex, 1);
-      }
-      console.log(newFields, exerciseId);
-      return newFields;
+      const {
+        exercises: {
+          //Need to create alias for [exerciseId] for this to work
+          byId: { [exerciseId]: deletedId, ...remainingExercises },
+        },
+      } = prevFields;
+
+      const remainingIds = prevFields.exercises.allIds.filter(
+        (item) => item !== exerciseId
+      );
+
+      return {
+        ...prevFields,
+        exercises: {
+          byId: {
+            ...remainingExercises,
+          },
+          allIds: remainingIds,
+        },
+      };
+    });
+  };
+
+  const handleAddSet = (event, exerciseId) => {
+    const newId = uuidv4();
+    const newSet = {
+      weight: "",
+      reps: "",
+      rest: "",
+    };
+    setFields((prevFields) => {
+      const {
+        sets: prevSets,
+        exercises: prevExercises,
+        exercises: {
+          byId: {
+            [exerciseId]: { sets: prevSetIds },
+          },
+        },
+        exercises: { byId: prevExerciseIds },
+      } = prevFields;
+
+      return {
+        ...prevFields,
+        sets: {
+          ...prevSets,
+          [newId]: newSet,
+        },
+        exercises: {
+          ...prevExercises,
+          byId: {
+            ...prevExerciseIds,
+            [exerciseId]: {
+              sets: [...prevSetIds, newId],
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const handleRemoveSet = (event, exerciseId, setId) => {
+    setFields((prevFields) => {
+      const {
+        sets: { [setId]: deletedId, ...remainingSets },
+      } = prevFields;
+
+      const remainingIds = prevFields.exercises.byId[exerciseId].sets.filter(
+        (item) => item !== setId
+      );
+
+      return {
+        ...prevFields,
+        exercises: {
+          ...prevFields.exercises,
+          byId: {
+            ...prevFields.exercises.byId,
+            [exerciseId]: {
+              ...prevFields.exercises.byId[exerciseId],
+              sets: remainingIds,
+            },
+          },
+        },
+        sets: {
+          ...remainingSets,
+        },
+      };
     });
   };
 
@@ -103,20 +185,26 @@ const WorkoutUpdateForm = (props) => {
                   weight={weight}
                   reps={reps}
                   rest={rest}
+                  handleRemoveSet={handleRemoveSet}
                 />
               );
             })}
             <div className="mt-5 flex justify-center gap-3">
-              <BtnSolid variant="gray-sm" text="+ Add Set" />
+              <BtnSolid
+                variant="gray-sm"
+                text="+ Add Set"
+                onClick={handleAddSet}
+                arguments={[exerciseId]}
+              />
               <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
             </div>
           </React.Fragment>
         );
       })}
-
       <div className="mt-8 flex justify-center">
         <BtnSolid
           onClick={handleAddExercise}
+          arguments={[]}
           variant="blue-light"
           text="Add Exercise"
         />

@@ -1,7 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
-import { useQuery } from "react-query";
-import * as api from "../workoutsAPI";
 import WorkoutUpdateForm from "./WorkoutUpdateForm";
 import WorkoutView from "./WorkoutView";
 
