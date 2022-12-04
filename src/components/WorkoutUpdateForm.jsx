@@ -62,9 +62,7 @@ const WorkoutUpdateForm = (props) => {
   };
 
   const handleChangeExercise = (event, exerciseId) => {
-    event.preventDefault();
     const newVal = event.target.value;
-    console.log(newVal);
     setFields((prevFields) => ({
       ...prevFields,
       exercises: {
@@ -147,6 +145,21 @@ const WorkoutUpdateForm = (props) => {
     });
   };
 
+  const handleChangeSet = (event, setId) => {
+    const newVal = event.target.value;
+    const name = event.target.name;
+    setFields((prevFields) => ({
+      ...prevFields,
+      sets: {
+        ...prevFields.sets,
+        [setId]: {
+          ...prevFields.sets[setId],
+          [name]: newVal,
+        },
+      },
+    }));
+  };
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -196,10 +209,9 @@ const WorkoutUpdateForm = (props) => {
             <ExerciseDataHeader inEditMode={props.inEditMode} />
             {setIds.map((setId, index) => {
               const { weight, reps, rest } = fields.sets[setId];
-              const keyId = uuidv4();
               return (
                 <SetEntryInput
-                  key={keyId}
+                  key={setId}
                   exerciseId={exerciseId}
                   setId={setId}
                   setNum={index + 1}
@@ -207,6 +219,7 @@ const WorkoutUpdateForm = (props) => {
                   reps={reps}
                   rest={rest}
                   handleRemoveSet={handleRemoveSet}
+                  handleChangeSet={handleChangeSet}
                 />
               );
             })}
