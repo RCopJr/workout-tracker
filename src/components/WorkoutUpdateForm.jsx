@@ -91,6 +91,7 @@ const WorkoutUpdateForm = (props) => {
         exercises: prevExercises,
         exercises: {
           byId: {
+            [exerciseId]: prevExercise,
             [exerciseId]: { sets: prevSetIds },
           },
         },
@@ -108,6 +109,7 @@ const WorkoutUpdateForm = (props) => {
           byId: {
             ...prevExerciseIds,
             [exerciseId]: {
+              ...prevExercise,
               sets: [...prevSetIds, newId],
             },
           },
@@ -159,6 +161,9 @@ const WorkoutUpdateForm = (props) => {
       },
     }));
   };
+
+  // console.log("exercises:", fields.exercises);
+  // console.log("sets:", fields.sets);
 
   return (
     <>
