@@ -1,20 +1,17 @@
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import BtnSolid from "./BtnSolid";
-import ExerciseDataHeader from "./ExerciseDataHeader";
-import ExerciseHeadingInput from "./ExerciseHeadingInput";
-import SetEntryInput from "./SetEntryInput";
+import ExerciseInputSection from "./ExerciseInputSection";
 import WorkoutNoteInput from "./WorkoutNoteInput";
 import WorkoutTitleInput from "./WorkoutTitleInput";
 
 const WorkoutUpdateForm = (props) => {
-  const defaultValues = { ...props.workout };
-  const [fields, setFields] = useState(defaultValues);
-  //TODO: implement this when refactorin
-  const removeByValue = (value, array) => {};
+  const [animationParent] = useAutoAnimate({ duration: 100 });
+  const [fields, setFields] = useState({ ...props.workout });
 
   const handleAddExercise = (event) => {
     const newId = uuidv4();
@@ -215,53 +212,29 @@ const WorkoutUpdateForm = (props) => {
       <div className="mt-3">
         <WorkoutNoteInput workoutId={props.workoutId} note={fields.note} />
       </div>
-      {fields.exercises.allIds.map((exerciseId) => {
-        const { name, sets: setIds } = fields.exercises.byId[exerciseId];
-        const keyId = exerciseId;
-        return (
-          <div key={keyId}>
-            <ExerciseHeadingInput
+      <div key={props.workoutId} ref={animationParent}>
+        {fields.exercises.allIds.map((exerciseId) => {
+          const { name, sets: setIds } = fields.exercises.byId[exerciseId];
+          const keyId = exerciseId;
+          return (
+            <ExerciseInputSection
+              key={keyId}
               exerciseId={exerciseId}
-              originalExerciseIds={props.workout.exercises.byId}
               name={name}
+              workout={props.workout}
               handleRemoveExercise={handleRemoveExercise}
               handleChangeExercise={handleChangeExercise}
+              inEditMode={props.inEditMode}
+              setIds={setIds}
+              handleRemoveSet={handleRemoveSet}
+              handleChangeSet={handleChangeSet}
+              fields={fields}
+              handleDuplicateSet={handleDuplicateSet}
+              handleAddSet={handleAddSet}
             />
-            <ExerciseDataHeader inEditMode={props.inEditMode} />
-            {setIds.map((setId, index) => {
-              const { weight, reps, rest } = fields.sets[setId];
-              return (
-                <SetEntryInput
-                  key={setId}
-                  exerciseId={exerciseId}
-                  originalSets={props.workout.sets}
-                  setId={setId}
-                  setNum={index + 1}
-                  weight={weight}
-                  reps={reps}
-                  rest={rest}
-                  handleRemoveSet={handleRemoveSet}
-                  handleChangeSet={handleChangeSet}
-                />
-              );
-            })}
-            <div className="mt-5 flex justify-center gap-3">
-              <BtnSolid
-                variant="gray-sm"
-                text="+ Add Set"
-                onClick={handleAddSet}
-                arguments={[exerciseId]}
-              />
-              <BtnSolid
-                variant="gray-sm"
-                text="+ Duplicate Set"
-                onClick={handleDuplicateSet}
-                arguments={[exerciseId]}
-              />
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
       <div className="mt-8 flex justify-center">
         <BtnSolid
           onClick={handleAddExercise}
