@@ -30,7 +30,7 @@ const SetEntry = (props) => {
             onChange={handleChange}
             name="weight"
             type="text"
-            placeholder={props.weight}
+            placeholder={props.weight ? props.weight : "Add weight"}
             value={userInput.weight}
           ></input>
         </div>
@@ -40,7 +40,7 @@ const SetEntry = (props) => {
             onChange={handleChange}
             name="reps"
             type="text"
-            placeholder={props.reps}
+            placeholder={props.reps ? props.reps : "Add reps"}
             value={userInput.reps}
           ></input>
         </div>
@@ -50,12 +50,18 @@ const SetEntry = (props) => {
             onChange={handleChange}
             name="rest"
             type="text"
-            placeholder={props.rest}
+            placeholder={props.rest ? props.rest : "Add rest"}
             value={userInput.rest}
           ></input>
         </div>
         <div className="hover:bg-blue-800 font-bold w-1/12  bg-gray-200 rounded-md text-center flex items-center justify-center">
-          <button type="button" className=" w-full rounded-md text-xs">
+          <button
+            onClick={() => {
+              props.handleRemoveSet(event, props.exerciseId, props.setId);
+            }}
+            type="button"
+            className=" w-full rounded-md text-xs"
+          >
             <FontAwesomeIcon icon={faMinus} />
           </button>
         </div>
