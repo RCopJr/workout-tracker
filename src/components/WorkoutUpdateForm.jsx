@@ -78,6 +78,38 @@ const WorkoutUpdateForm = (props) => {
     }));
   };
 
+  const updateFieldsWithNewSet = (prevFields, exerciseId, newSet, newId) => {
+    const {
+      sets: prevSets,
+      exercises: prevExercises,
+      exercises: {
+        byId: {
+          [exerciseId]: prevExercise,
+          [exerciseId]: { sets: prevSetIds },
+        },
+      },
+      exercises: { byId: prevExerciseIds },
+    } = prevFields;
+
+    return {
+      ...prevFields,
+      sets: {
+        ...prevSets,
+        [newId]: newSet,
+      },
+      exercises: {
+        ...prevExercises,
+        byId: {
+          ...prevExerciseIds,
+          [exerciseId]: {
+            ...prevExercise,
+            sets: [...prevSetIds, newId],
+          },
+        },
+      },
+    };
+  };
+
   const handleAddSet = (event, exerciseId) => {
     const newId = uuidv4();
     const newSet = {
@@ -85,36 +117,23 @@ const WorkoutUpdateForm = (props) => {
       reps: "",
       rest: "",
     };
-    setFields((prevFields) => {
-      const {
-        sets: prevSets,
-        exercises: prevExercises,
-        exercises: {
-          byId: {
-            [exerciseId]: prevExercise,
-            [exerciseId]: { sets: prevSetIds },
-          },
-        },
-        exercises: { byId: prevExerciseIds },
-      } = prevFields;
 
-      return {
-        ...prevFields,
-        sets: {
-          ...prevSets,
-          [newId]: newSet,
-        },
-        exercises: {
-          ...prevExercises,
-          byId: {
-            ...prevExerciseIds,
-            [exerciseId]: {
-              ...prevExercise,
-              sets: [...prevSetIds, newId],
-            },
-          },
-        },
+    setFields((prevFields) => {
+      return updateFieldsWithNewSet(prevFields, exerciseId, newSet, newId);
+    });
+  };
+
+  const handleDuplicateSet = (event, exerciseId) => {
+    const newId = uuidv4();
+
+    setFields((prevFields) => {
+      const setIds = prevFields.exercises.byId[exerciseId].sets;
+      const latestSetId = setIds[setIds.length - 1];
+      const newSet = {
+        ...prevFields.sets[latestSetId],
       };
+
+      return updateFieldsWithNewSet(prevFields, exerciseId, newSet, newId);
     });
   };
 
@@ -161,9 +180,6 @@ const WorkoutUpdateForm = (props) => {
       },
     }));
   };
-
-  // console.log("exercises:", fields.exercises);
-  // console.log("sets:", fields.sets);
 
   return (
     <>
@@ -235,7 +251,12 @@ const WorkoutUpdateForm = (props) => {
                 onClick={handleAddSet}
                 arguments={[exerciseId]}
               />
-              <BtnSolid variant="gray-sm" text="+ Duplicate Set" />
+              <BtnSolid
+                variant="gray-sm"
+                text="+ Duplicate Set"
+                onClick={handleDuplicateSet}
+                arguments={[exerciseId]}
+              />
             </div>
           </div>
         );
