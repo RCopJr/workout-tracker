@@ -7,7 +7,7 @@ const WorkoutNoteInput = (props) => {
     setUserInput(newVal);
   };
   return (
-    <input
+    <textarea
       className="text-md text-gray-500"
       onChange={handleChange}
       placeholder={props.note}

@@ -1,7 +1,7 @@
 import React from "react";
 
 const WorkoutNote = (props) => {
-  return <p className="text-md text-gray-500">{props.note}</p>;
+  return <div className="text-md text-gray-500">{props.note}</div>;
 };
 
 export default WorkoutNote;
