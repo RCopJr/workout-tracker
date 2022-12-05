@@ -178,6 +178,15 @@ const WorkoutUpdateForm = (props) => {
     }));
   };
 
+  const handleChangeWorkoutTitle = (event) => {
+    const newVal = event.target.value;
+
+    setFields((prevFields) => ({
+      ...prevFields,
+      name: newVal,
+    }));
+  };
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -195,7 +204,10 @@ const WorkoutUpdateForm = (props) => {
         </div>
         <div className="flex justify-center items-center">
           <Dialog.Title as="h2" className="font-extrabold text-lg">
-            <WorkoutTitleInput name={fields.name} />
+            <WorkoutTitleInput
+              name={fields.name}
+              handleChangeWorkoutTitle={handleChangeWorkoutTitle}
+            />
           </Dialog.Title>
         </div>
         <div className="flex justify-end items-center">
