@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 const WorkoutNoteInput = (props) => {
   const [userInput, setUserInput] = useState("");
@@ -7,12 +8,13 @@ const WorkoutNoteInput = (props) => {
     setUserInput(newVal);
   };
   return (
-    <textarea
-      className="text-md text-gray-500"
-      onChange={handleChange}
-      placeholder={props.note}
-      value={userInput}
-    />
+    <div className="text-md text-gray-500">
+      <TextareaAutosize
+        onChange={handleChange}
+        value={userInput}
+        placeholder="text here"
+      />
+    </div>
   );
 };
 
