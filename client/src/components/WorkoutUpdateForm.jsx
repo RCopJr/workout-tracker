@@ -38,12 +38,25 @@ const WorkoutUpdateForm = (props) => {
       const {
         exercises: {
           //Need to create alias for [exerciseId] for this to work
-          byId: { [exerciseId]: deletedId, ...remainingExercises },
+          byId: {
+            [exerciseId]: { sets: setsToRemove },
+            ...remainingExercises
+          },
         },
+        sets,
       } = prevFields;
 
       const remainingIds = prevFields.exercises.allIds.filter(
-        (item) => item !== exerciseId
+        (id) => id !== exerciseId
+      );
+
+      const setsToKeep = Object.keys(sets).filter((setId) => {
+        return !setsToRemove.includes(setId);
+      });
+
+      const newSetsObject = Object.assign(
+        {},
+        ...setsToKeep.map((setId) => ({ [setId]: sets[setId] }))
       );
 
       return {
@@ -54,6 +67,7 @@ const WorkoutUpdateForm = (props) => {
           },
           allIds: remainingIds,
         },
+        sets: newSetsObject,
       };
     });
   };
@@ -244,6 +258,10 @@ const WorkoutUpdateForm = (props) => {
     });
   };
 
+  const handleClickSave = (event) => {
+    console.log(fields);
+  };
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -328,7 +346,12 @@ const WorkoutUpdateForm = (props) => {
         />
       </div>
       <div className="mt-8 flex justify-center">
-        <BtnSolid variant="blue-dark" text="Save" />
+        <BtnSolid
+          variant="blue-dark"
+          text="Save"
+          onClick={handleClickSave}
+          arguments={[]}
+        />
       </div>
       <div className="mt-8 flex justify-center">
         <BtnSolid variant="red-light" text="Delete Workout" />
