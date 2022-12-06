@@ -1,6 +1,7 @@
 import {
+  faArrowDown,
+  faArrowUp,
   faEllipsis,
-  faPencil,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +24,47 @@ function ExerciseDropdown(props) {
         leaveTo="opacity-0 scale-0"
       >
         <Menu.Items className="z-20 w-60 absolute right-0 mt-2 origin-top-right rounded-md bg-gray-800 text-white shadow-lg focus:outline-none">
+          {!props.isFirstExercise && (
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={(event) => {
+                    props.handleMoveExerciseUp(event, props.exerciseId);
+                  }}
+                  className={`${
+                    active && "bg-gray-700/60"
+                  } w-full rounded-b-md flex items-center px-3 py-1.5`}
+                >
+                  <FontAwesomeIcon
+                    icon={faArrowUp}
+                    className="text-xl mr-4 text-sky-500"
+                  />
+                  Move Up
+                </button>
+              )}
+            </Menu.Item>
+          )}
+
+          {!props.isLastExercise && (
+            <Menu.Item>
+              {({ active }) => (
+                <button
+                  onClick={(event) => {
+                    props.handleMoveExerciseDown(event, props.exerciseId);
+                  }}
+                  className={`${
+                    active && "bg-gray-700/60"
+                  } w-full rounded-b-md flex items-center px-3 py-1.5`}
+                >
+                  <FontAwesomeIcon
+                    icon={faArrowDown}
+                    className="text-xl mr-4 text-sky-500"
+                  />
+                  Move Down
+                </button>
+              )}
+            </Menu.Item>
+          )}
           <Menu.Item>
             {({ active }) => (
               <button

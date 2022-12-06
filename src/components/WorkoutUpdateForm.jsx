@@ -196,6 +196,54 @@ const WorkoutUpdateForm = (props) => {
     }));
   };
 
+  const handleMoveExerciseUp = (event, exerciseId) => {
+    setFields((prevFields) => {
+      const {
+        exercises: { allIds },
+      } = prevFields;
+      const exerciseIdIndex = allIds.indexOf(exerciseId);
+      const swappedExercise = allIds[exerciseIdIndex - 1];
+      const prefixArray = allIds.slice(0, exerciseIdIndex - 1);
+      const suffixArray = allIds.slice(
+        exerciseIdIndex + 1 <= allIds.length - 1
+          ? exerciseIdIndex + 1
+          : allIds.length
+      );
+
+      return {
+        ...prevFields,
+        exercises: {
+          ...prevFields.exercises,
+          allIds: [...prefixArray, exerciseId, swappedExercise, ...suffixArray],
+        },
+      };
+    });
+  };
+
+  const handleMoveExerciseDown = (event, exerciseId) => {
+    setFields((prevFields) => {
+      const {
+        exercises: { allIds },
+      } = prevFields;
+      const exerciseIdIndex = allIds.indexOf(exerciseId);
+      const swappedExercise = allIds[exerciseIdIndex + 1];
+      const prefixArray = allIds.slice(0, exerciseIdIndex);
+      const suffixArray = allIds.slice(
+        exerciseIdIndex + 2 <= allIds.length - 1
+          ? exerciseIdIndex + 2
+          : allIds.length
+      );
+
+      return {
+        ...prevFields,
+        exercises: {
+          ...prevFields.exercises,
+          allIds: [...prefixArray, swappedExercise, exerciseId, ...suffixArray],
+        },
+      };
+    });
+  };
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -256,6 +304,17 @@ const WorkoutUpdateForm = (props) => {
               fields={fields}
               handleDuplicateSet={handleDuplicateSet}
               handleAddSet={handleAddSet}
+              handleMoveExerciseUp={handleMoveExerciseUp}
+              handleMoveExerciseDown={handleMoveExerciseDown}
+              isFirstExercise={
+                fields.exercises.allIds &&
+                fields.exercises.allIds[0] === exerciseId
+              }
+              isLastExercise={
+                fields.exercises.allIds &&
+                fields.exercises.allIds[fields.exercises.allIds.length - 1] ===
+                  exerciseId
+              }
             />
           );
         })}

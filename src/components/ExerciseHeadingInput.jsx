@@ -30,6 +30,10 @@ const ExerciseHeadingInput = (props) => {
         <ExerciseDropdown
           exerciseId={props.exerciseId}
           handleRemoveExercise={props.handleRemoveExercise}
+          handleMoveExerciseUp={props.handleMoveExerciseUp}
+          handleMoveExerciseDown={props.handleMoveExerciseDown}
+          isFirstExercise={props.isFirstExercise}
+          isLastExercise={props.isLastExercise}
         />
       </div>
     </div>

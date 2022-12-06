@@ -15,6 +15,10 @@ const ExerciseInputSection = (props) => {
         name={props.name}
         handleRemoveExercise={props.handleRemoveExercise}
         handleChangeExercise={props.handleChangeExercise}
+        handleMoveExerciseUp={props.handleMoveExerciseUp}
+        handleMoveExerciseDown={props.handleMoveExerciseDown}
+        isFirstExercise={props.isFirstExercise}
+        isLastExercise={props.isLastExercise}
       />
       <ExerciseDataHeader inEditMode={props.inEditMode} />
       <div ref={animationParent}>
