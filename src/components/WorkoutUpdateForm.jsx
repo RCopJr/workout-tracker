@@ -187,6 +187,15 @@ const WorkoutUpdateForm = (props) => {
     }));
   };
 
+  const handleWorkoutNote = (event) => {
+    const newVal = event.target.value;
+
+    setFields((prevFields) => ({
+      ...prevFields,
+      note: newVal,
+    }));
+  };
+
   return (
     <>
       <div className="grid grid-cols-3">
@@ -222,7 +231,11 @@ const WorkoutUpdateForm = (props) => {
         </div>
       </div>
       <div className="mt-3">
-        <WorkoutNoteInput workoutId={props.workoutId} note={fields.note} />
+        <WorkoutNoteInput
+          workoutId={props.workoutId}
+          note={fields.note}
+          handleWorkoutNote={handleWorkoutNote}
+        />
       </div>
       <div key={props.workoutId} ref={animationParent}>
         {fields.exercises.allIds.map((exerciseId) => {
