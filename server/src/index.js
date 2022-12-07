@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
-const workouts = {
+let workouts = {
   byId: {
     w1: {
       id: "w1",
@@ -118,6 +118,15 @@ app.get("/workouts/:id", (req, res) => {
   const { id } = req.params;
   const workout = workouts.byId[id];
   res.json(workout);
+});
+
+app.put("/workouts/:id", (req, res) => {
+  const { id } = req.params;
+  const { workout } = req.body;
+
+  workouts.byId[id] = workout;
+
+  res.json(workouts.byId[id]);
 });
 
 app.listen(3001, () => {
