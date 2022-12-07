@@ -41,3 +41,12 @@ export const updateWorkout = async (workout) => {
     throw new Error("Network response as not ok when updating workout.");
   }
 };
+
+export const deleteWorkout = async (id) => {
+  try {
+    const response = await api.delete(`/workouts/${workout.id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Network response as not ok when deleting workout.");
+  }
+};

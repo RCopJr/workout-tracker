@@ -148,6 +148,20 @@ app.put("/workouts/:id", (req, res) => {
   res.json(workouts.byId[id]);
 });
 
+app.delete("/workouts/:id", (req, res) => {
+  const { id } = req.params;
+
+  delete workouts.byId[id];
+
+  const workoutIdIndex = workouts.allIds.indexOf(id);
+
+  if (workoutIdIndex > -1) {
+    workouts.allIds.splice(workoutIdIndex, 1);
+  }
+
+  return res.json(workouts);
+});
+
 app.listen(3001, () => {
   console.log("Server started on port 3001");
 });
