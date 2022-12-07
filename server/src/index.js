@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { v4: uuidv4 } = require("uuid");
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -118,6 +119,24 @@ app.get("/workouts/:id", (req, res) => {
   const { id } = req.params;
   const workout = workouts.byId[id];
   res.json(workout);
+});
+
+app.post("/workouts", (req, res) => {
+  const workoutId = uuidv4();
+  const newWorkout = {
+    id: workoutId,
+    name: "New Workout",
+    note: "",
+    exercises: {
+      byId: {},
+      allIds: [],
+    },
+    sets: {},
+  };
+
+  workouts.byId[workoutId] = newWorkout;
+  workouts.allIds.unshift(workoutId);
+  res.json(workouts);
 });
 
 app.put("/workouts/:id", (req, res) => {
