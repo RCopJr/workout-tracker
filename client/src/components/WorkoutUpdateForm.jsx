@@ -2,8 +2,10 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { v4 as uuidv4 } from "uuid";
+import * as api from "../workoutsAPI";
 import BtnSolid from "./BtnSolid";
 import ExerciseInputSection from "./ExerciseInputSection";
 import WorkoutNoteInput from "./WorkoutNoteInput";
@@ -12,6 +14,15 @@ import WorkoutTitleInput from "./WorkoutTitleInput";
 const WorkoutUpdateForm = (props) => {
   const [animationParent] = useAutoAnimate({ duration: 100 });
   const [fields, setFields] = useState({ ...props.workout });
+
+  const queryClient = useQueryClient();
+
+  const { isLoading, mutate } = useMutation(api.updateWorkout, {
+    onSuccess: (workout) => {
+      queryClient.setQueryData(["workouts", workout.id], workout);
+      props.setInEditMode(false);
+    },
+  });
 
   const handleAddExercise = (event) => {
     const newId = uuidv4();
@@ -259,8 +270,12 @@ const WorkoutUpdateForm = (props) => {
   };
 
   const handleClickSave = (event) => {
-    console.log(fields);
+    mutate(fields);
   };
+
+  if (isLoading) {
+    return <div>Saving Data...</div>;
+  }
 
   return (
     <>
