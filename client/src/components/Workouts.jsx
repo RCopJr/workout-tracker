@@ -1,7 +1,7 @@
 import React from "react";
-import { useQuery } from "react-query";
-import { v4 as uuidv4 } from "uuid";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import * as api from "../workoutsAPI";
+import BtnSolid from "./BtnSolid";
 import WorkoutPreviewCard from "./WorkoutPreviewCard";
 
 const Workouts = (props) => {
@@ -13,19 +13,48 @@ const Workouts = (props) => {
     refetchOnWindowFocus: false,
   });
 
+  const queryClient = useQueryClient();
+
+  const { isLoading: isLoadingMutation, mutate } = useMutation(
+    api.createWorkout,
+    {
+      onSuccess: (workouts) => {
+        queryClient.setQueryData("workouts", workouts);
+      },
+    }
+  );
+
   if (isLoading) {
     return <p>Loading...</p>;
+  }
+
+  if (isLoadingMutation) {
+    return <p>Creating Workout...</p>;
   }
 
   if (isError) {
     return <p>Error Getting Data</p>;
   }
+
+  const handleCreateWorkout = (event) => {
+    mutate();
+  };
   return (
-    <>
-      {workouts.allIds.map((workoutId) => {
-        return <WorkoutPreviewCard key={workoutId} workoutId={workoutId} />;
-      })}
-    </>
+    <div className="flex flex-col justify-center items-center p-4">
+      <div className="w-full">
+        <BtnSolid
+          variant="blue-dark"
+          text="Create Workout"
+          onClick={handleCreateWorkout}
+          arguments={[]}
+        />
+      </div>
+      <div className="flex flex-wrap gap-3 justify-between mt-5">
+        {workouts.allIds.map((workoutId) => {
+          return <WorkoutPreviewCard key={workoutId} workoutId={workoutId} />;
+        })}
+      </div>
+    </div>
   );
 };
 
