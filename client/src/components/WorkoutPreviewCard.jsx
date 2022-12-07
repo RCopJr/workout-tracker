@@ -41,25 +41,15 @@ const WorkoutPreviewCard = (props) => {
         onClick={() => {
           openModal();
         }}
-        className="w-[48%] p-3 bg-white border border-gray-100 rounded-xl hover:bg-gray-100"
+        className="flex flex-col w-[48%] p-3 h-40 bg-white border border-gray-300 rounded-xl hover:bg-gray-100"
       >
-        <h1 className="font-bold font-sans pb-2">{workout.name}</h1>
-        {workout.exercises.allIds.map((exerciseId) => {
-          return (
-            <p
-              key={exerciseId}
-              className="text-slate-600"
-            >{`${workout.exercises.byId[exerciseId].sets.length} x ${workout.exercises.byId[exerciseId].name}`}</p>
-          );
-        })}
-        {/* <p className="text-slate-600">
+        <div className="font-bold pb-2 h-1/5">{workout.name}</div>
+        <div className="text-slate-600 line-clamp-4 p-0">
           {workout.exercises.allIds.reduce((previewInfo, id, index) => {
             const { name, sets } = workout.exercises.byId[id];
-            return index == 0
-              ? `${sets.length} x ${name}`
-              : `${previewInfo}, ${sets.length} x ${name}`;
+            return index == 0 ? `${name}` : `${previewInfo}, ${name}`;
           }, "")}
-        </p> */}
+        </div>
       </div>
       <WorkoutModal
         closeModal={closeModal}
