@@ -9,7 +9,7 @@ export const getWorkouts = async () => {
     const response = await api.get("/workouts");
     return response.data;
   } catch (error) {
-    throw new Error("Network response was not ok.");
+    throw new Error("Network response was not ok when getting workouts.");
   }
 };
 
@@ -18,6 +18,17 @@ export const getWorkout = async (id) => {
     const response = await api.get(`/workouts/${id}`);
     return response.data;
   } catch (error) {
-    throw new Error("Network response as not ok.");
+    throw new Error("Network response as not ok when getting workout by id.");
+  }
+};
+
+export const updateWorkout = async (workout) => {
+  try {
+    const response = await api.put(`/workouts/${workout.id}`, {
+      workout: workout,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Network response as not ok when updating workout.");
   }
 };
