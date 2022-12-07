@@ -22,6 +22,15 @@ export const getWorkout = async (id) => {
   }
 };
 
+export const createWorkout = async () => {
+  try {
+    const response = await api.post(`/workouts`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Network response as not ok when creating workout.");
+  }
+};
+
 export const updateWorkout = async (workout) => {
   try {
     const response = await api.put(`/workouts/${workout.id}`, {
