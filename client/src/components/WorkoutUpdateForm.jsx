@@ -17,12 +17,19 @@ const WorkoutUpdateForm = (props) => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading, mutate } = useMutation(api.updateWorkout, {
+  const { isLoading, mutate: updateWorkout } = useMutation(api.updateWorkout, {
     onSuccess: (workout) => {
       queryClient.setQueryData(["workouts", workout.id], workout);
       props.setInEditMode(false);
     },
   });
+
+  const { isLoading: deleteLoading, mutate: deleteWorkout } = useMutation(
+    api.deleteWorkout,
+    {
+      onSucces: (workouts) => {},
+    }
+  );
 
   const handleAddExercise = (event) => {
     const newId = uuidv4();
@@ -270,8 +277,10 @@ const WorkoutUpdateForm = (props) => {
   };
 
   const handleClickSave = (event) => {
-    mutate(fields);
+    updateWorkout(fields);
   };
+
+  const handleClickDelete = (event) => {};
 
   if (isLoading) {
     return <div>Saving Data...</div>;
