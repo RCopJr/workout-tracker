@@ -17,17 +17,23 @@ const WorkoutUpdateForm = (props) => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading, mutate: updateWorkout } = useMutation(api.updateWorkout, {
-    onSuccess: (workout) => {
-      queryClient.setQueryData(["workouts", workout.id], workout);
-      props.setInEditMode(false);
-    },
-  });
+  const { isLoading: updateLoading, mutate: updateWorkout } = useMutation(
+    api.updateWorkout,
+    {
+      onSuccess: (workout) => {
+        queryClient.setQueryData(["workouts", workout.id], workout);
+        props.setInEditMode(false);
+      },
+    }
+  );
 
   const { isLoading: deleteLoading, mutate: deleteWorkout } = useMutation(
     api.deleteWorkout,
     {
-      onSucces: (workouts) => {},
+      onSuccess: (workouts) => {
+        queryClient.setQueryData("workouts", workouts);
+        props.closeModal();
+      },
     }
   );
 
@@ -280,10 +286,16 @@ const WorkoutUpdateForm = (props) => {
     updateWorkout(fields);
   };
 
-  const handleClickDelete = (event) => {};
+  const handleClickDelete = (event) => {
+    deleteWorkout(props.workoutId);
+  };
 
-  if (isLoading) {
-    return <div>Saving Data...</div>;
+  if (deleteLoading) {
+    return <div>Deleting workout...</div>;
+  }
+
+  if (updateLoading) {
+    return <div>Updating workout...</div>;
   }
 
   return (
@@ -378,7 +390,12 @@ const WorkoutUpdateForm = (props) => {
         />
       </div>
       <div className="mt-8 flex justify-center">
-        <BtnSolid variant="red-light" text="Delete Workout" />
+        <BtnSolid
+          variant="red-light"
+          text="Delete Workout"
+          onClick={handleClickDelete}
+          arguments={[]}
+        />
       </div>
     </>
   );

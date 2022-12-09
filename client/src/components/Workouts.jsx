@@ -49,7 +49,7 @@ const Workouts = (props) => {
           arguments={[]}
         />
       </div>
-      <div className="flex flex-wrap gap-3 justify-between mt-5">
+      <div className="flex flex-wrap gap-3 justify-between mt-5 w-full">
         {workouts.allIds.map((workoutId) => {
           return <WorkoutPreviewCard key={workoutId} workoutId={workoutId} />;
         })}
