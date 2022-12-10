@@ -15,9 +15,35 @@ app.use(cors());
 mongoose.set("strictQuery", true);
 
 mongoose.connect(
-  "mongodb+srv://ramonito:KbYNEmJye5Oe9nMM@cluster0.a4ftivq.mongodb.net/workoutsDB",
-  { useNewUrlParser: true }
+  "mongodb+srv://ramonito:KbYNEmJye5Oe9nMM@cluster0.a4ftivq.mongodb.net/usersDB"
 );
+
+const userSchema = {
+  name: String,
+  workouts: [mongoose.ObjectId],
+};
+
+const workoutSchema = {
+  name: String,
+  note: String,
+  exercises: [
+    {
+      id: String,
+      name: String,
+      sets: {
+        id: String,
+        name: String,
+        weight: String,
+        reps: String,
+        rest: String,
+      },
+    },
+  ],
+};
+
+const User = mongoose.model("User", userSchema);
+
+const Workout = mongoose.model("Workout", workoutSchema);
 
 const workoutCollectionSchema = {
   byId: mongoose.Schema.Types.Mixed,
@@ -29,113 +55,50 @@ const WorkoutCollection = mongoose.model(
   workoutCollectionSchema
 );
 
-const exampleCollection = new WorkoutCollection({
-  byId: {
-    w1: {
-      id: "w1",
-      name: "Test Workout",
-      note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      exercises: {
-        byId: {
-          e1: {
-            id: "e1",
-            name: "Excercise 1",
-            sets: ["e1set1", "e1set2", "e1set3"],
-          },
-          e2: {
-            id: "e2",
-            name: "Exercise 2",
-            sets: ["e2set1", "e2set2"],
-          },
-        },
-        allIds: ["e1", "e2"],
-      },
-      sets: {
-        e1set1: {
-          weight: 10,
+app.get("/testInsert", (req, res) => {
+  const workout = new Workout({
+    name: "Poo Day",
+    note: "Focus on arms and back",
+    exercises: [
+      {
+        id: "testId2",
+        name: "Barbell Row",
+        sets: {
+          id: "testSetId2",
+          weight: "135",
           reps: "8-12",
-          rest: 150,
-        },
-        e1set2: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e1set3: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e2set1: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e2set2: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
+          rest: "150",
         },
       },
-    },
-    w2: {
-      id: "w2",
-      name: "Test Workout",
-      note: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      exercises: {
-        byId: {
-          e1: {
-            id: "e1",
-            name: "Excercise 1",
-            sets: ["e1set1", "e1set2", "e1set3"],
-          },
-          e2: {
-            id: "e2",
-            name: "Exercise 2",
-            sets: ["e2set1", "e2set2"],
-          },
-        },
-        allIds: ["e1", "e2"],
-      },
-      sets: {
-        e1set1: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e1set2: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e1set3: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e2set1: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-        e2set2: {
-          weight: 10,
-          reps: "8-12",
-          rest: 150,
-        },
-      },
-    },
-  },
-  allIds: ["w1", "w2"],
-});
+    ],
+  });
 
-// WorkoutCollection.insertMany(exampleCollection, (err) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("success");
-//   }
-// });
+  workout.save();
+
+  // const monching = new User({
+  //   name: "Monching",
+  //   workouts: [workout],
+  // });
+
+  // const backel = new User({
+  //   name: "Backel",
+  //   workouts: [],
+  // });
+
+  User.updateOne(
+    { name: { $eq: "Backel" } },
+    { $push: { workouts: workout } },
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Updated: ", docs);
+      }
+    }
+  );
+
+  res.send("worked");
+});
 
 app.get("/workouts", (req, res) => {
   WorkoutCollection.find({}, (err, workoutCollection) => {
@@ -151,7 +114,6 @@ app.get("/workouts", (req, res) => {
 app.get("/workouts/:id", (req, res) => {
   const { id } = req.params;
   WorkoutCollection.find({}, (err, workoutCollection) => {
-    //console.log(workoutCollection);
     if (err) {
       res.send(err);
     } else {

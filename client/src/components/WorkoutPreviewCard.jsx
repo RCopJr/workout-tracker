@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import * as api from "../workoutsAPI";
 import WorkoutModal from "./WorkoutModal";
-import WorkoutNoteInput from "./WorkoutNoteInput";
 
 const WorkoutPreviewCard = (props) => {
   const { data: workout, isLoading } = useQuery(
