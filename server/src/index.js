@@ -46,41 +46,49 @@ const normalizeWorkouts = (workouts) => {
   let normalizedWorkouts = { byId: {}, allIds: [] };
 
   workouts.forEach((workout) => {
-    const { _id: workoutId, name, note, exercises } = workout;
-    normalizedWorkouts.byId[workoutId] = {
-      id: workoutId,
-      name: name,
-      note: note,
-      exercises: [],
-    };
+    const { _id: workoutId } = workout;
+    const normalizedWorkout = normalizeWorkout(workout);
+    normalizedWorkouts.byId[workoutId] = normalizedWorkout;
     normalizedWorkouts.allIds.push(workoutId);
-
-    let normalizedExercises = { byId: {}, allIds: [] };
-    let normalizedSets = {};
-    exercises.forEach((exercise) => {
-      const { _id: exerciseId, sets, name } = exercise;
-      normalizedExercises.byId[exerciseId] = {
-        id: exerciseId,
-        name: name,
-        sets: [],
-      };
-      normalizedExercises.allIds.push(exerciseId);
-      sets.forEach((set) => {
-        const { _id: setId, weight, reps, rest } = set;
-        normalizedSets[setId] = {
-          weight: weight,
-          reps: reps,
-          rest: rest,
-        };
-        normalizedExercises.byId[exerciseId].sets.push(setId);
-      });
-    });
-
-    normalizedWorkouts.byId[workoutId].exercises = normalizedExercises;
-    normalizedWorkouts.byId[workoutId]["sets"] = normalizedSets;
   });
 
   return normalizedWorkouts;
+};
+
+const normalizeWorkout = (workout) => {
+  const { _id: workoutId, name, note, exercises } = workout;
+  const normalizedWorkout = {
+    id: workoutId,
+    name: name,
+    note: note,
+    exercises: {},
+    sets: {},
+  };
+  let normalizedExercises = { byId: {}, allIds: [] };
+  let normalizedSets = {};
+  exercises.forEach((exercise) => {
+    const { _id: exerciseId, sets, name } = exercise;
+    normalizedExercises.byId[exerciseId] = {
+      id: exerciseId,
+      name: name,
+      sets: [],
+    };
+    normalizedExercises.allIds.push(exerciseId);
+    sets.forEach((set) => {
+      const { _id: setId, weight, reps, rest } = set;
+      normalizedSets[setId] = {
+        weight: weight,
+        reps: reps,
+        rest: rest,
+      };
+      normalizedExercises.byId[exerciseId].sets.push(setId);
+    });
+  });
+
+  normalizedWorkout.exercises = normalizedExercises;
+  normalizedWorkout.sets = normalizedSets;
+
+  return normalizedWorkout;
 };
 
 app.get("/workouts", (req, res) => {
@@ -97,11 +105,13 @@ app.get("/workouts", (req, res) => {
 
 app.get("/workouts/:id", (req, res) => {
   const { id } = req.params;
-  WorkoutCollection.find({}, (err, workoutCollection) => {
+  Workout.findById(id, (err, foundWorkout) => {
     if (err) {
       res.send(err);
     } else {
-      res.json(workoutCollection[0].byId[id]);
+      const workout = foundWorkout;
+      let normalizedWorkout = normalizeWorkout(workout);
+      res.json(normalizedWorkout);
     }
   });
 });
@@ -157,7 +167,57 @@ app.post("/workouts", async (req, res) => {
   );
 });
 
-app.put("/workouts/:id", async (req, res) => {});
+app.put("/workouts/:id", async (req, res) => {
+  const { id } = req.params;
+  const { workout } = req.body;
+
+  const denormalizedExercises = [];
+
+  workout.exercises.allIds.map((exerciseId) => {
+    const { name } = workout.exercises.byId[exerciseId];
+    const denormalizedSets = workout.exercises.byId[exerciseId].sets.map(
+      (setId) => {
+        const { name, weight, reps, rest } = workout.sets[setId];
+        return {
+          name: name,
+          weight: weight,
+          reps: reps,
+          rest: rest,
+        };
+      }
+    );
+
+    let newExercise = {
+      name: name,
+      sets: denormalizedSets,
+    };
+
+    denormalizedExercises.push(newExercise);
+  });
+
+  res.json({
+    exercises: denormalizedExercises,
+  });
+
+  // Workout.updateOne(
+  //   {
+  //     _id: id,
+  //     $or: [
+  //       { name: { $ne: workout.name } },
+  //       { note: { $ne: workout.note } },
+  //       { exercises: { $ne: denormalizedExercises } },
+  //     ],
+  //   },
+  //   {
+  //     $set: {
+  //       given_name: new_data.given_name,
+  //       family_name: new_data.family_name,
+  //       email: new_data.email,
+  //       picture: new_data.picture,
+  //     },
+  //   }
+  // );
+});
 
 app.delete("/workouts/:id", async (req, res) => {
   const { id } = req.params;
