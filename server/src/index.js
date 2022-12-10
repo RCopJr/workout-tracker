@@ -14,9 +14,7 @@ app.use(cors());
 
 mongoose.set("strictQuery", true);
 
-mongoose.connect(
-  `mongodb+srv://ramonito:${process.env.DB_PASSWORD}@cluster0.a4ftivq.mongodb.net/${process.env.DB_NAME}`
-);
+mongoose.connect(process.env.DB_URI);
 
 const workoutSchema = {
   name: String,
