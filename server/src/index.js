@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { v4: uuidv4 } = require("uuid");
 const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -11,7 +12,24 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
-let workouts = {
+mongoose.set("strictQuery", true);
+
+mongoose.connect(
+  "mongodb+srv://ramonito:KbYNEmJye5Oe9nMM@cluster0.a4ftivq.mongodb.net/workoutsDB",
+  { useNewUrlParser: true }
+);
+
+const workoutCollectionSchema = {
+  byId: mongoose.Schema.Types.Mixed,
+  allIds: [String],
+};
+
+const WorkoutCollection = mongoose.model(
+  "WorkoutCollection",
+  workoutCollectionSchema
+);
+
+const exampleCollection = new WorkoutCollection({
   byId: {
     w1: {
       id: "w1",
@@ -109,57 +127,99 @@ let workouts = {
     },
   },
   allIds: ["w1", "w2"],
-};
+});
+
+// WorkoutCollection.insertMany(exampleCollection, (err) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("success");
+//   }
+// });
 
 app.get("/workouts", (req, res) => {
-  res.json(workouts);
+  WorkoutCollection.find({}, (err, workoutCollection) => {
+    console.log(workoutCollection);
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(workoutCollection[0]);
+    }
+  });
 });
 
 app.get("/workouts/:id", (req, res) => {
   const { id } = req.params;
-  const workout = workouts.byId[id];
-  res.json(workout);
+  WorkoutCollection.find({}, (err, workoutCollection) => {
+    //console.log(workoutCollection);
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(workoutCollection[0].byId[id]);
+    }
+  });
 });
 
-app.post("/workouts", (req, res) => {
-  const workoutId = uuidv4();
-  const newWorkout = {
-    id: workoutId,
-    name: "New Workout",
-    note: "",
-    exercises: {
-      byId: {},
-      allIds: [],
-    },
-    sets: {},
-  };
+app.post("/workouts", async (req, res) => {
+  try {
+    const workoutId = uuidv4();
+    const newWorkout = {
+      id: workoutId,
+      name: "New Workout",
+      note: "",
+      exercises: {
+        byId: {},
+        allIds: [],
+      },
+      sets: {},
+    };
 
-  workouts.byId[workoutId] = newWorkout;
-  workouts.allIds.unshift(workoutId);
-  res.json(workouts);
+    let workouts = await WorkoutCollection.findOne({});
+
+    workouts.byId[workoutId] = newWorkout;
+    workouts.allIds.push(workoutId);
+
+    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
+    res.json(newWorkouts);
+  } catch (err) {
+    res.send(err);
+  }
 });
 
-app.put("/workouts/:id", (req, res) => {
+app.put("/workouts/:id", async (req, res) => {
   const { id } = req.params;
   const { workout } = req.body;
 
-  workouts.byId[id] = workout;
+  try {
+    let workouts = await WorkoutCollection.findOne({});
+    workouts.byId[id] = workout;
 
-  res.json(workouts.byId[id]);
+    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
+    res.json(newWorkouts.byId[id]);
+  } catch (err) {
+    res.send(err);
+  }
 });
 
-app.delete("/workouts/:id", (req, res) => {
+app.delete("/workouts/:id", async (req, res) => {
   const { id } = req.params;
 
-  delete workouts.byId[id];
+  try {
+    let workouts = await WorkoutCollection.findOne({});
 
-  const workoutIdIndex = workouts.allIds.indexOf(id);
+    delete workouts.byId[id];
 
-  if (workoutIdIndex > -1) {
-    workouts.allIds.splice(workoutIdIndex, 1);
+    const workoutIdIndex = workouts.allIds.indexOf(id);
+
+    if (workoutIdIndex > -1) {
+      workouts.allIds.splice(workoutIdIndex, 1);
+    }
+
+    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
+    res.json(newWorkouts);
+  } catch (err) {
+    res.send(err);
   }
-
-  return res.json(workouts);
 });
 
 app.listen(3001, () => {
