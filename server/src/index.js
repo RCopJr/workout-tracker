@@ -18,11 +18,6 @@ mongoose.connect(
   "mongodb+srv://ramonito:KbYNEmJye5Oe9nMM@cluster0.a4ftivq.mongodb.net/usersDB"
 );
 
-const userSchema = {
-  name: String,
-  workouts: [mongoose.ObjectId],
-};
-
 const workoutSchema = {
   name: String,
   note: String,
@@ -39,6 +34,11 @@ const workoutSchema = {
       },
     },
   ],
+};
+
+const userSchema = {
+  name: String,
+  workouts: [workoutSchema],
 };
 
 const User = mongoose.model("User", userSchema);
@@ -81,7 +81,7 @@ app.get("/workouts/:id", (req, res) => {
 
 app.post("/workouts", async (req, res) => {
   const workout = new Workout({
-    name: "Empty Workout",
+    name: "Test Workout",
     note: "",
     exercises: [],
   });
@@ -104,40 +104,33 @@ app.post("/workouts", async (req, res) => {
   );
 });
 
-app.put("/workouts/:id", async (req, res) => {
-  const { id } = req.params;
-  const { workout } = req.body;
-
-  try {
-    let workouts = await WorkoutCollection.findOne({});
-    workouts.byId[id] = workout;
-
-    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
-    res.json(newWorkouts.byId[id]);
-  } catch (err) {
-    res.send(err);
-  }
-});
+app.put("/workouts/:id", async (req, res) => {});
 
 app.delete("/workouts/:id", async (req, res) => {
   const { id } = req.params;
 
-  try {
-    let workouts = await WorkoutCollection.findOne({});
-
-    delete workouts.byId[id];
-
-    const workoutIdIndex = workouts.allIds.indexOf(id);
-
-    if (workoutIdIndex > -1) {
-      workouts.allIds.splice(workoutIdIndex, 1);
+  Workout.deleteOne({ name: { $eq: "Test Workout" } }, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
     }
+  });
 
-    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
-    res.json(newWorkouts);
-  } catch (err) {
-    res.send(err);
-  }
+  User.findOneAndUpdate(
+    { name: { $eq: "Monching" } },
+    { $pull: { workouts: { name: { $eq: "Test Workout" } } } },
+    { new: true },
+    (err, newUserData) => {
+      if (err) {
+        res.send(err);
+        console.log("error occured");
+      } else {
+        res.json(newUserData);
+        console.log("newUserData");
+      }
+    }
+  );
 });
 
 app.listen(3001, () => {
