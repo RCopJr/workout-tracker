@@ -15,7 +15,7 @@ app.use(cors());
 mongoose.set("strictQuery", true);
 
 mongoose.connect(
-  "mongodb+srv://ramonito:KbYNEmJye5Oe9nMM@cluster0.a4ftivq.mongodb.net/usersDB"
+  `mongodb+srv://ramonito:${process.env.DB_PASSWORD}@cluster0.a4ftivq.mongodb.net/${process.env.DB_NAME}`
 );
 
 const workoutSchema = {
@@ -23,15 +23,14 @@ const workoutSchema = {
   note: String,
   exercises: [
     {
-      id: String,
       name: String,
-      sets: {
-        id: String,
-        name: String,
-        weight: String,
-        reps: String,
-        rest: String,
-      },
+      sets: [
+        {
+          weight: String,
+          reps: String,
+          rest: String,
+        },
+      ],
     },
   ],
 };
@@ -45,25 +44,55 @@ const User = mongoose.model("User", userSchema);
 
 const Workout = mongoose.model("Workout", workoutSchema);
 
-const workoutCollectionSchema = {
-  byId: mongoose.Schema.Types.Mixed,
-  allIds: [String],
+const normalizeWorkouts = (workouts) => {
+  let normalizedWorkouts = { byId: {}, allIds: [] };
+
+  workouts.forEach((workout) => {
+    const { _id: workoutId, name, note, exercises } = workout;
+    normalizedWorkouts.byId[workoutId] = {
+      id: workoutId,
+      name: name,
+      note: note,
+      exercises: [],
+    };
+    normalizedWorkouts.allIds.push(workoutId);
+
+    let normalizedExercises = { byId: {}, allIds: [] };
+    let normalizedSets = {};
+    exercises.forEach((exercise) => {
+      const { _id: exerciseId, sets, name } = exercise;
+      normalizedExercises.byId[exerciseId] = {
+        id: exerciseId,
+        name: name,
+        sets: [],
+      };
+      normalizedExercises.allIds.push(exerciseId);
+      sets.forEach((set) => {
+        const { _id: setId, weight, reps, rest } = set;
+        normalizedSets[setId] = {
+          weight: weight,
+          reps: reps,
+          rest: rest,
+        };
+        normalizedExercises.byId[exerciseId].sets.push(setId);
+      });
+    });
+
+    normalizedWorkouts.byId[workoutId].exercises = normalizedExercises;
+    normalizedWorkouts.byId[workoutId]["sets"] = normalizedSets;
+  });
+
+  return normalizedWorkouts;
 };
 
-const WorkoutCollection = mongoose.model(
-  "WorkoutCollection",
-  workoutCollectionSchema
-);
-
-app.get("/testInsert", (req, res) => {});
-
 app.get("/workouts", (req, res) => {
-  WorkoutCollection.find({}, (err, workoutCollection) => {
-    console.log(workoutCollection);
+  User.findOne({ name: { $eq: "Monching" } }, (err, foundUser) => {
     if (err) {
       res.send(err);
     } else {
-      res.json(workoutCollection[0]);
+      const workouts = foundUser.workouts;
+      let normalizedWorkouts = normalizeWorkouts(workouts);
+      res.json(normalizedWorkouts);
     }
   });
 });
@@ -81,9 +110,35 @@ app.get("/workouts/:id", (req, res) => {
 
 app.post("/workouts", async (req, res) => {
   const workout = new Workout({
-    name: "Test Workout",
-    note: "",
-    exercises: [],
+    name: "Test Workout 2",
+    note: "test note",
+    exercises: [
+      {
+        name: "test exercise",
+        sets: [
+          {
+            weight: "120",
+            reps: "10",
+            rest: "100",
+          },
+          {
+            weight: "120",
+            reps: "10",
+            rest: "100",
+          },
+        ],
+      },
+      {
+        name: "test exercise 2",
+        sets: [
+          {
+            weight: "120",
+            reps: "10",
+            rest: "100",
+          },
+        ],
+      },
+    ],
   });
 
   workout.save();
