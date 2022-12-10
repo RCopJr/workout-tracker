@@ -55,50 +55,7 @@ const WorkoutCollection = mongoose.model(
   workoutCollectionSchema
 );
 
-app.get("/testInsert", (req, res) => {
-  const workout = new Workout({
-    name: "Poo Day",
-    note: "Focus on arms and back",
-    exercises: [
-      {
-        id: "testId2",
-        name: "Barbell Row",
-        sets: {
-          id: "testSetId2",
-          weight: "135",
-          reps: "8-12",
-          rest: "150",
-        },
-      },
-    ],
-  });
-
-  workout.save();
-
-  // const monching = new User({
-  //   name: "Monching",
-  //   workouts: [workout],
-  // });
-
-  // const backel = new User({
-  //   name: "Backel",
-  //   workouts: [],
-  // });
-
-  User.updateOne(
-    { name: { $eq: "Backel" } },
-    { $push: { workouts: workout } },
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Updated: ", docs);
-      }
-    }
-  );
-
-  res.send("worked");
-});
+app.get("/testInsert", (req, res) => {});
 
 app.get("/workouts", (req, res) => {
   WorkoutCollection.find({}, (err, workoutCollection) => {
@@ -123,29 +80,28 @@ app.get("/workouts/:id", (req, res) => {
 });
 
 app.post("/workouts", async (req, res) => {
-  try {
-    const workoutId = uuidv4();
-    const newWorkout = {
-      id: workoutId,
-      name: "New Workout",
-      note: "",
-      exercises: {
-        byId: {},
-        allIds: [],
-      },
-      sets: {},
-    };
+  const workout = new Workout({
+    name: "Empty Workout",
+    note: "",
+    exercises: [],
+  });
 
-    let workouts = await WorkoutCollection.findOne({});
+  workout.save();
 
-    workouts.byId[workoutId] = newWorkout;
-    workouts.allIds.push(workoutId);
-
-    let newWorkouts = await WorkoutCollection.findOneAndUpdate({}, workouts);
-    res.json(newWorkouts);
-  } catch (err) {
-    res.send(err);
-  }
+  User.findOneAndUpdate(
+    { name: { $eq: "Monching" } },
+    { $push: { workouts: workout } },
+    { new: true },
+    (err, newUserData) => {
+      if (err) {
+        console.log(err);
+        res.send(err);
+      } else {
+        console.log(`Successfully update Monching with new workout`);
+        res.json(newUserData);
+      }
+    }
+  );
 });
 
 app.put("/workouts/:id", async (req, res) => {
