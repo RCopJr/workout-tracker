@@ -53,6 +53,7 @@ const WorkoutPreviewCard = (props) => {
         isOpen={isOpen}
         workoutId={props.workoutId}
         workout={workout}
+        allWorkoutIds={props.allWorkoutIds}
       />
     </>
   );

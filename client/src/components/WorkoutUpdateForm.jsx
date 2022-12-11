@@ -20,9 +20,15 @@ const WorkoutUpdateForm = (props) => {
   const { isLoading: updateLoading, mutate: updateWorkout } = useMutation(
     api.updateWorkout,
     {
-      onSuccess: (workout) => {
-        queryClient.setQueryData(["workouts", workout.id], workout);
+      onMutate: (updatedWorkout) => {
+        queryClient.setQueryData(
+          ["workouts", props.workout.id],
+          updatedWorkout
+        );
         props.setInEditMode(false);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(["workouts", props.workout.id]);
       },
     }
   );
@@ -30,9 +36,16 @@ const WorkoutUpdateForm = (props) => {
   const { isLoading: deleteLoading, mutate: deleteWorkout } = useMutation(
     api.deleteWorkout,
     {
-      onSuccess: (workouts) => {
-        queryClient.setQueryData("workouts", workouts);
+      onMutate: (deletedWorkoutId) => {
+        queryClient.setQueryData("workouts", {
+          allIds: props.allWorkoutIds.filter((workoutId) => {
+            return workoutId != deletedWorkoutId;
+          }),
+        });
         props.closeModal();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries("workouts");
       },
     }
   );

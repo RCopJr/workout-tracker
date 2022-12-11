@@ -18,8 +18,8 @@ const Workouts = (props) => {
   const { isLoading: isLoadingMutation, mutate } = useMutation(
     api.createWorkout,
     {
-      onSuccess: (workouts) => {
-        queryClient.setQueryData("workouts", workouts);
+      onSuccess: () => {
+        queryClient.invalidateQueries("workouts");
       },
     }
   );
@@ -51,10 +51,14 @@ const Workouts = (props) => {
       </div>
       <div className="flex flex-wrap gap-3 justify-between mt-5 w-full">
         {workouts.allIds.map((workoutId) => {
-          return <p>{workoutId}</p>;
-          {
-            /* return <WorkoutPreviewCard key={workoutId} workoutId={workoutId} />; */
-          }
+          console.log(workoutId);
+          return (
+            <WorkoutPreviewCard
+              key={workoutId}
+              workoutId={workoutId}
+              allWorkoutIds={workouts.allIds}
+            />
+          );
         })}
       </div>
     </div>

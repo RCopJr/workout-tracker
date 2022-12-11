@@ -49,6 +49,7 @@ const WorkoutModal = (props) => {
                       setInEditMode={setInEditMode}
                       workoutId={props.workoutId}
                       workout={props.workout}
+                      allWorkoutIds={props.allWorkoutIds}
                     />
                   ) : (
                     <WorkoutView
