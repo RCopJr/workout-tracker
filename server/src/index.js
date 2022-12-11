@@ -35,7 +35,7 @@ const workoutSchema = {
 
 const userSchema = {
   name: String,
-  workouts: [workoutSchema],
+  workouts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workout" }],
 };
 
 const User = mongoose.model("User", userSchema);
@@ -92,12 +92,12 @@ const normalizeWorkout = (workout) => {
 };
 
 app.get("/workouts", (req, res) => {
-  User.findOne({ name: { $eq: "Monching" } }, (err, foundUser) => {
+  User.findOne({ name: { $eq: "Monching" } }, async (err, foundUser) => {
     if (err) {
       res.send(err);
     } else {
-      const workouts = foundUser.workouts;
-      let normalizedWorkouts = normalizeWorkouts(workouts);
+      const populatedUser = await foundUser.populate("workouts");
+      let normalizedWorkouts = normalizeWorkouts(populatedUser.workouts);
       res.json(normalizedWorkouts);
     }
   });
@@ -118,7 +118,7 @@ app.get("/workouts/:id", (req, res) => {
 
 app.post("/workouts", async (req, res) => {
   const workout = new Workout({
-    name: "Test Workout 2",
+    name: "Test Workout 3",
     note: "test note",
     exercises: [
       {
@@ -153,7 +153,7 @@ app.post("/workouts", async (req, res) => {
 
   User.findOneAndUpdate(
     { name: { $eq: "Monching" } },
-    { $push: { workouts: workout } },
+    { $push: { workouts: workout._id } },
     { new: true },
     (err, newUserData) => {
       if (err) {
@@ -195,34 +195,34 @@ app.put("/workouts/:id", async (req, res) => {
     denormalizedExercises.push(newExercise);
   });
 
-  res.json({
-    exercises: denormalizedExercises,
-  });
+  // res.json({
+  //   exercises: denormalizedExercises,
+  // });
 
-  // Workout.updateOne(
-  //   {
-  //     _id: id,
-  //     $or: [
-  //       { name: { $ne: workout.name } },
-  //       { note: { $ne: workout.note } },
-  //       { exercises: { $ne: denormalizedExercises } },
-  //     ],
-  //   },
-  //   {
-  //     $set: {
-  //       given_name: new_data.given_name,
-  //       family_name: new_data.family_name,
-  //       email: new_data.email,
-  //       picture: new_data.picture,
-  //     },
-  //   }
-  // );
+  Workout.findOneAndUpdate(
+    {
+      _id: { $eq: id },
+    },
+    {
+      name: workout.name,
+      note: workout.note,
+      exercises: denormalizedExercises,
+    },
+    { upsert: true },
+    (err, newWorkoutData) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(newWorkoutData);
+      }
+    }
+  );
 });
 
 app.delete("/workouts/:id", async (req, res) => {
   const { id } = req.params;
 
-  Workout.deleteOne({ name: { $eq: "Test Workout" } }, (err, result) => {
+  Workout.deleteOne({ _id: { $eq: id } }, (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -232,7 +232,7 @@ app.delete("/workouts/:id", async (req, res) => {
 
   User.findOneAndUpdate(
     { name: { $eq: "Monching" } },
-    { $pull: { workouts: { name: { $eq: "Test Workout" } } } },
+    { $pull: { workouts: id } },
     { new: true },
     (err, newUserData) => {
       if (err) {
