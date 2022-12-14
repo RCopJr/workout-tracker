@@ -51,7 +51,6 @@ const Workouts = (props) => {
       </div>
       <div className="flex flex-wrap gap-3 justify-between mt-5 w-full">
         {workouts.allIds.map((workoutId) => {
-          console.log(workoutId);
           return (
             <WorkoutPreviewCard
               key={workoutId}
