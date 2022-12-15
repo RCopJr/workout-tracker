@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Workouts from "./Workouts";
+import Workouts from "./Workout/Workouts";
 
 function App() {
   const { workoutId, setWorkoutId } = useState("");

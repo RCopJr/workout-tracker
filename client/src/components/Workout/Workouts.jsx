@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import * as api from "../workoutsAPI";
-import BtnSolid from "./BtnSolid";
+import * as api from "../../workoutsAPI";
+import BtnSolid from "../BtnSolid";
 import WorkoutPreviewCard from "./WorkoutPreviewCard";
 
 const Workouts = (props) => {

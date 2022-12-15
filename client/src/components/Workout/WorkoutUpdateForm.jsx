@@ -5,9 +5,9 @@ import { Dialog } from "@headlessui/react";
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { v4 as uuidv4 } from "uuid";
-import * as api from "../workoutsAPI";
-import BtnSolid from "./BtnSolid";
-import ExerciseInputSection from "./ExerciseInputSection";
+import * as api from "../../workoutsAPI";
+import BtnSolid from "../BtnSolid";
+import ExerciseInputSection from "../Exercise/ExerciseInputSection";
 import WorkoutNoteInput from "./WorkoutNoteInput";
 import WorkoutTitleInput from "./WorkoutTitleInput";
 

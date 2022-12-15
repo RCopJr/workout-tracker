@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 const WorkoutNoteInput = (props) => {

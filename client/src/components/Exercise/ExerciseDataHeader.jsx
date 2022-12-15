@@ -1,6 +1,4 @@
-import { Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
-import ExerciseHeading from "./ExerciseHeading";
 
 const ExerciseDataHeader = (props) => {
   return (

@@ -1,7 +1,4 @@
-import { faMinus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+import React from "react";
 
 const SetEntry = (props) => {
   return (

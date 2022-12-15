@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import * as api from "../workoutsAPI";
+import * as api from "../../workoutsAPI";
 import WorkoutModal from "./WorkoutModal";
 
 const WorkoutPreviewCard = (props) => {

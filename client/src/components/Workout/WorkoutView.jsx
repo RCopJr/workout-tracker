@@ -3,11 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import ExerciseDataHeader from "./ExerciseDataHeader";
-import ExerciseHeading from "./ExerciseHeading";
-import SetEntry from "./SetEntry";
+import ExerciseDataHeader from "../Exercise/ExerciseDataHeader";
+import ExerciseHeading from "../Exercise/ExerciseHeading";
+import SetEntry from "../Set/SetEntry";
 import WorkoutNote from "./WorkoutNote";
-import Workouts from "./Workouts";
 import WorkoutTitle from "./WorkoutTitle";
 
 const WorkoutView = (props) => {

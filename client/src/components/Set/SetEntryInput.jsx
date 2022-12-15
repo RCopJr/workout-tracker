@@ -1,6 +1,6 @@
 import { faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React from "react";
 
 const SetEntry = (props) => {
   const getPlaceHolderValue = (originalSets, setId, name) => {

@@ -1,5 +1,5 @@
-import { Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+import React from "react";
+
 const ExerciseHeading = (props) => {
   return (
     <div className="mt-5 flex max-w-xl justify-between items-center">

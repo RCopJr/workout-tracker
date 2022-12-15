@@ -1,9 +1,9 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import React from "react";
-import BtnSolid from "./BtnSolid";
+import BtnSolid from "../BtnSolid";
+import SetEntryInput from "../Set/SetEntryInput";
 import ExerciseDataHeader from "./ExerciseDataHeader";
 import ExerciseHeadingInput from "./ExerciseHeadingInput";
-import SetEntryInput from "./SetEntryInput";
 
 const ExerciseInputSection = (props) => {
   const [animationParent] = useAutoAnimate({ duration: 100 });
