@@ -1,10 +1,12 @@
 # 🧐 About
 
-Creating a MERN full-stack application for creating and updating workout plans.
+Creating a MERN full-stack application for creating and updating workout plans based off the [Strong](https://www.strong.app/) app.
 
-|            Home page             |            Workout View             |            Other Edit Options             |
-| :------------------------------: | :---------------------------------: | :---------------------------------------: |
-| ![](readme_images/home_page.png) | ![](readme_images/view_workout.png) | ![](readme_images/other_edit_options.png) |
+# 📱 Mobile Friendly
+
+|            Home page             |            Workout View             |            Edit Workout View             |
+| :------------------------------: | :---------------------------------: | :--------------------------------------: |
+| ![](readme_images/home_page.png) | ![](readme_images/view_workout.png) | ![](readme_images/edit_workout_view.png) |
 
 <!-- <div style="display: flex, justify-content: space-between, flex-direction: row">
     <div>
