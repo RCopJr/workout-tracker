@@ -2,9 +2,13 @@
 
 Creating a MERN full-stack application for creating and updating workout plans.
 
-|            Home page             |            Workout View             |          Edit Workout View          |            Other Edit Options             |
-| :------------------------------: | :---------------------------------: | :---------------------------------: | :---------------------------------------: |
-| ![](readme_images/home_page.png) | ![](readme_images/view_workout.png) | ![](readme_images/edit_workout.png) | ![](readme_images/other_edit_options.png) |
+|            Home page             |            Workout View             |
+| :------------------------------: | :---------------------------------: |
+| ![](readme_images/home_page.png) | ![](readme_images/view_workout.png) |
+
+|          Edit Workout View          |            Other Edit Options             |
+| :---------------------------------: | :---------------------------------------: |
+| ![](readme_images/edit_workout.png) | ![](readme_images/other_edit_options.png) |
 
 <!-- <div style="display: flex, justify-content: space-between, flex-direction: row">
     <div>
