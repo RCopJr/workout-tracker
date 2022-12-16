@@ -1,5 +1,4 @@
 require("dotenv").config();
-const { v4: uuidv4 } = require("uuid");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -39,133 +38,137 @@ const userSchema = {
 };
 
 const User = mongoose.model("User", userSchema);
-
 const Workout = mongoose.model("Workout", workoutSchema);
 
-app.get("/workouts", (req, res) => {
-  User.findOne({ name: { $eq: "Monching" } }, async (err, foundUser) => {
-    if (err) {
-      res.send(err);
-    } else {
-      const populatedUser = await foundUser.populate("workouts");
-      let normalizedWorkouts = normalizeWorkouts(populatedUser.workouts);
-      res.json(normalizedWorkouts);
-    }
-  });
-});
+app
+  .route("/workouts")
 
-app.get("/workouts/:id", (req, res) => {
-  const { id } = req.params;
-  Workout.findById(id, (err, foundWorkout) => {
-    if (err) {
-      res.send(err);
-    } else {
-      const workout = foundWorkout;
-      // console.log("workout in get:", workout, id);
-      let normalizedWorkout = normalizeWorkout(workout);
-      res.json(normalizedWorkout);
-    }
-  });
-});
-
-app.post("/workouts", async (req, res) => {
-  const workout = new Workout({
-    name: "New Workout",
-    note: "",
-    exercises: [],
-  });
-
-  workout.save();
-
-  User.findOneAndUpdate(
-    { name: { $eq: "Monching" } },
-    { $push: { workouts: workout._id } },
-    { new: true },
-    (err, newUserData) => {
+  .get((req, res) => {
+    User.findOne({ name: { $eq: "Monching" } }, async (err, foundUser) => {
       if (err) {
-        console.log(err);
         res.send(err);
       } else {
-        console.log(`Successfully update Monching with new workout`);
-        res.json(newUserData);
+        const populatedUser = await foundUser.populate("workouts");
+        let normalizedWorkouts = normalizeWorkouts(populatedUser.workouts);
+        res.json(normalizedWorkouts);
       }
-    }
-  );
-});
+    });
+  })
 
-app.put("/workouts/:id", (req, res) => {
-  const { id } = req.params;
-  const { workout } = req.body;
+  .post(async (req, res) => {
+    const workout = new Workout({
+      name: "New Workout",
+      note: "",
+      exercises: [],
+    });
 
-  const denormalizedExercises = [];
+    workout.save();
 
-  workout.exercises.allIds.map((exerciseId) => {
-    const { name } = workout.exercises.byId[exerciseId];
-    const denormalizedSets = workout.exercises.byId[exerciseId].sets.map(
-      (setId) => {
-        const { name, weight, reps, rest } = workout.sets[setId];
-        return {
-          name: name,
-          weight: weight,
-          reps: reps,
-          rest: rest,
-        };
+    User.findOneAndUpdate(
+      { name: { $eq: "Monching" } },
+      { $push: { workouts: workout._id } },
+      { new: true },
+      (err, newUserData) => {
+        if (err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          console.log(`Successfully update Monching with new workout`);
+          res.json(newUserData);
+        }
       }
     );
-
-    let newExercise = {
-      name: name,
-      sets: denormalizedSets,
-    };
-
-    denormalizedExercises.push(newExercise);
   });
 
-  Workout.findOneAndUpdate(
-    {
-      _id: { $eq: id },
-    },
-    {
-      name: workout.name,
-      note: workout.note,
-      exercises: denormalizedExercises,
-    },
-    { upsert: true },
-    (err, newWorkoutData) => {
+app
+  .route("/workouts/:id")
+
+  .get((req, res) => {
+    const { id } = req.params;
+    Workout.findById(id, (err, foundWorkout) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(newWorkoutData);
+        const workout = foundWorkout;
+        let normalizedWorkout = normalizeWorkout(workout);
+        res.json(normalizedWorkout);
       }
-    }
-  );
-});
+    });
+  })
 
-app.delete("/workouts/:id", (req, res) => {
-  const { id } = req.params;
+  .put((req, res) => {
+    const { id } = req.params;
+    const { workout } = req.body;
 
-  Workout.deleteOne({ _id: { $eq: id } }, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
-  });
+    const denormalizedExercises = [];
 
-  User.findOneAndUpdate(
-    { name: { $eq: "Monching" } },
-    { $pull: { workouts: id } },
-    { new: true },
-    (err, newUserData) => {
+    workout.exercises.allIds.map((exerciseId) => {
+      const { name } = workout.exercises.byId[exerciseId];
+      const denormalizedSets = workout.exercises.byId[exerciseId].sets.map(
+        (setId) => {
+          const { name, weight, reps, rest } = workout.sets[setId];
+          return {
+            name: name,
+            weight: weight,
+            reps: reps,
+            rest: rest,
+          };
+        }
+      );
+
+      let newExercise = {
+        name: name,
+        sets: denormalizedSets,
+      };
+
+      denormalizedExercises.push(newExercise);
+    });
+
+    Workout.findOneAndUpdate(
+      {
+        _id: { $eq: id },
+      },
+      {
+        name: workout.name,
+        note: workout.note,
+        exercises: denormalizedExercises,
+      },
+      { upsert: true },
+      (err, newWorkoutData) => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send(newWorkoutData);
+        }
+      }
+    );
+  })
+
+  .delete((req, res) => {
+    const { id } = req.params;
+
+    Workout.deleteOne({ _id: { $eq: id } }, (err, result) => {
       if (err) {
-        res.send(err);
-        console.log("error occured");
+        console.log(err);
       } else {
-        res.json(newUserData);
+        console.log(result);
       }
-    }
-  );
-});
+    });
+
+    User.findOneAndUpdate(
+      { name: { $eq: "Monching" } },
+      { $pull: { workouts: id } },
+      { new: true },
+      (err, newUserData) => {
+        if (err) {
+          res.send(err);
+          console.log("error occured");
+        } else {
+          res.json(newUserData);
+        }
+      }
+    );
+  });
 
 app.listen(3001, () => {
   console.log("Server started on port 3001");
@@ -174,7 +177,6 @@ app.listen(3001, () => {
 const normalizeWorkouts = (workouts) => {
   let normalizedWorkouts = { byId: {}, allIds: [] };
 
-  //console.log("workouts:", workouts);
   workouts.forEach((workout) => {
     const { _id: workoutId } = workout;
     const normalizedWorkout = normalizeWorkout(workout);
