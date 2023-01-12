@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -11,35 +13,32 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
-mongoose.set("strictQuery", true);
+const Workout = require("./models/workoutModel");
+const User = require("./models/userModel");
 
-mongoose.connect(process.env.DB_URI);
+const functions = require("./functions");
+const normalizeWorkout = functions.normalizeWorkout;
+const normalizeWorkouts = functions.normalizeWorkouts;
 
-const workoutSchema = {
-  name: String,
-  note: String,
-  exercises: [
-    {
-      name: String,
-      sets: [
-        {
-          weight: String,
-          reps: String,
-          rest: String,
-        },
-      ],
-    },
-  ],
-};
+//USER API ROUTES
+app
+  .route("/users")
+  .post((req, res) => {
+    res.json({ message: "Register User" });
+  })
+  .get((req, res) => {
+    res.json({ message: "Get User" });
+  });
 
-const userSchema = {
-  name: String,
-  workouts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workout" }],
-};
+app.post("/users/login", (req, res) => {
+  res.json({ message: "Login User" });
+});
 
-const User = mongoose.model("User", userSchema);
-const Workout = mongoose.model("Workout", workoutSchema);
+app.post("/users/login", (req, res) => {
+  res.json({ message: "Login User" });
+});
 
+//WORKOUT API ROUTES
 app
   .route("/workouts")
 
@@ -54,7 +53,6 @@ app
       }
     });
   })
-
   .post(async (req, res) => {
     const workout = new Workout({
       name: "New Workout",
@@ -82,7 +80,6 @@ app
 
 app
   .route("/workouts/:id")
-
   .get((req, res) => {
     const { id } = req.params;
     Workout.findById(id, (err, foundWorkout) => {
@@ -95,7 +92,6 @@ app
       }
     });
   })
-
   .put((req, res) => {
     const { id } = req.params;
     const { workout } = req.body;
@@ -143,7 +139,6 @@ app
       }
     );
   })
-
   .delete((req, res) => {
     const { id } = req.params;
 
@@ -173,52 +168,3 @@ app
 app.listen(3001, () => {
   console.log("Server started on port 3001");
 });
-
-const normalizeWorkouts = (workouts) => {
-  let normalizedWorkouts = { byId: {}, allIds: [] };
-
-  workouts.forEach((workout) => {
-    const { _id: workoutId } = workout;
-    const normalizedWorkout = normalizeWorkout(workout);
-    normalizedWorkouts.byId[workoutId] = normalizedWorkout;
-    normalizedWorkouts.allIds.push(workoutId);
-  });
-
-  return normalizedWorkouts;
-};
-
-const normalizeWorkout = (workout) => {
-  const { _id: workoutId, name, note, exercises } = workout;
-  const normalizedWorkout = {
-    id: workoutId,
-    name: name,
-    note: note,
-    exercises: {},
-    sets: {},
-  };
-  let normalizedExercises = { byId: {}, allIds: [] };
-  let normalizedSets = {};
-  exercises.forEach((exercise) => {
-    const { _id: exerciseId, sets, name } = exercise;
-    normalizedExercises.byId[exerciseId] = {
-      id: exerciseId,
-      name: name,
-      sets: [],
-    };
-    normalizedExercises.allIds.push(exerciseId);
-    sets.forEach((set) => {
-      const { _id: setId, weight, reps, rest } = set;
-      normalizedSets[setId] = {
-        weight: weight,
-        reps: reps,
-        rest: rest,
-      };
-      normalizedExercises.byId[exerciseId].sets.push(setId);
-    });
-  });
-
-  normalizedWorkout.exercises = normalizedExercises;
-  normalizedWorkout.sets = normalizedSets;
-
-  return normalizedWorkout;
-};
