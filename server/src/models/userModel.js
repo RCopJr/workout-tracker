@@ -6,6 +6,8 @@ mongoose.connect(process.env.DB_URI);
 
 const userSchema = {
   name: String,
+  email: String,
+  password: String,
   workouts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workout" }],
 };
 

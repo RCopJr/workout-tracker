@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const normalizeWorkouts = (workouts) => {
   let normalizedWorkouts = { byId: {}, allIds: [] };
 
@@ -47,7 +49,14 @@ const normalizeWorkout = (workout) => {
   return normalizedWorkout;
 };
 
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+};
+
 module.exports = {
   normalizeWorkout: normalizeWorkout,
   normalizeWorkouts: normalizeWorkouts,
+  generateToken: generateToken,
 };

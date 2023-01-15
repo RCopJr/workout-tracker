@@ -19,23 +19,66 @@ const User = require("./models/userModel");
 const functions = require("./functions");
 const normalizeWorkout = functions.normalizeWorkout;
 const normalizeWorkouts = functions.normalizeWorkouts;
+const generateToken = functions.generateToken;
+const { protect } = require("./middleware/authMiddleware");
 
 //USER API ROUTES
-app
-  .route("/users")
-  .post((req, res) => {
-    res.json({ message: "Register User" });
-  })
-  .get((req, res) => {
-    res.json({ message: "Get User" });
-  });
+app.route("/users").post(async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    res.status(400);
+    res.json({ message: "Include all info" });
+  } else {
+    const userExists = await User.findOne({ email: email });
 
-app.post("/users/login", (req, res) => {
-  res.json({ message: "Login User" });
+    if (userExists) {
+      res.status(400);
+      res.json({ message: "User already exists" });
+    } else {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const user = await User.create({
+        name: name,
+        email: email,
+        password: hashedPassword,
+        workouts: [],
+      });
+
+      if (user) {
+        res.status(201);
+        res.json({
+          _id: user.id,
+          name: user.name,
+          email: user.email,
+          token: generateToken(user.id),
+        });
+      }
+    }
+  }
 });
 
-app.post("/users/login", (req, res) => {
-  res.json({ message: "Login User" });
+app.use("/users/:id", protect);
+
+app.route("/users/:id").get(async (req, res) => {
+  res.json({ message: "Get User" });
+});
+
+app.post("/users/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email: email });
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user.id),
+    });
+  } else {
+    res.json({ message: "Could not log in" });
+  }
 });
 
 //WORKOUT API ROUTES
