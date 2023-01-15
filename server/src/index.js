@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const app = express();
@@ -22,7 +21,6 @@ const normalizeWorkouts = functions.normalizeWorkouts;
 const generateToken = functions.generateToken;
 const { protect } = require("./middleware/authMiddleware");
 
-//USER API ROUTES
 app.route("/users").post(async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -58,10 +56,23 @@ app.route("/users").post(async (req, res) => {
   }
 });
 
-app.use("/users/:id", protect);
+app.route("/users/:id").get(protect, (req, res) => {
+  const { id: userId } = req.params;
 
-app.route("/users/:id").get(async (req, res) => {
-  res.json({ message: "Get User" });
+  if (userId == req.user.id) {
+    User.findById(userId, (err, user) => {
+      res.json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        workouts: user.workouts,
+      });
+    });
+  } else {
+    res.json({
+      message: "Wrong User",
+    });
+  }
 });
 
 app.post("/users/login", async (req, res) => {
@@ -81,12 +92,11 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-//WORKOUT API ROUTES
 app
   .route("/workouts")
 
   .get((req, res) => {
-    User.findOne({ name: { $eq: "Monching" } }, async (err, foundUser) => {
+    User.findOne({ name: { $eq: req.user.id } }, async (err, foundUser) => {
       if (err) {
         res.send(err);
       } else {
@@ -106,7 +116,7 @@ app
     workout.save();
 
     User.findOneAndUpdate(
-      { name: { $eq: "Monching" } },
+      { id: { $eq: req.user.id } },
       { $push: { workouts: workout._id } },
       { new: true },
       (err, newUserData) => {
@@ -194,7 +204,7 @@ app
     });
 
     User.findOneAndUpdate(
-      { name: { $eq: "Monching" } },
+      { id: { $eq: req.user.id } },
       { $pull: { workouts: id } },
       { new: true },
       (err, newUserData) => {
